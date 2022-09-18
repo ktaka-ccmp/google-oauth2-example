@@ -32,9 +32,10 @@ curl -H 'Accept: application/json' http://localhost:8000/api/customer/|jq .
 pip install python-decouple
 ~~~
 
+'backend' directory structure
 ~~~
-# tree backend/
-backend/
+# tree -a
+.
 ├── backend
 │   ├── __init__.py
 │   ├── asgi.py
@@ -63,23 +64,47 @@ python manage.py runserver [::]:8000
 
 ### React.js
 
-~~
-  344  curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
-  345  sudo apt-get install -y nodejs
-  346  npx create-react-app frontend
-  379  npm start 
-  373  cd frontend/
-  378  npm install axios react-router-dom
-  398  npm i reactstrap
-  409  npm i bootstrap
-  379  npm start 
-  407  curl -s  http://127.0.0.1:8000/api/customer/ |jq .results[1]
-  423  vi .env
+Install node.js
+~~~
+curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
+sudo apt-get install -y nodejs
 ~~~
 
+Create project
 ~~~
-# tree frontend/
-frontend/
+npx create-react-app frontend
+cd frontend/
+npm start 
+~~~
+
+Module install
+~~~
+npm install axios react-router-dom reactstrap bootstrap
+~~~
+
+Files modified or newly created:
+~~~
+src/index.js
+src/Customer.js
+src/App.js
+~~~
+
+Original files kept as is:
+~~~
+public/index.html
+public/manifest.json
+public/robots.txt
+public/favicon.ico
+.gitignore
+package-lock.json
+package.json
+~~~
+
+'frontend' directory structure:
+~~~
+# tree -a
+.
+├── .gitignore
 ├── package-lock.json
 ├── package.json
 ├── public
@@ -90,18 +115,30 @@ frontend/
 └── src
     ├── App.js
     ├── Customer.js
-    ├── index.css
     └── index.js
 
 2 directories, 10 files
+~~~
+
+frontend/.env (modify depending on your environment.)
+~~~
+REACT_APP_API_SERVER=http://api.example.com:8000
+~~~
+
+~~~
+npm start 
+~~~
+
+
+~~~
+curl -s  http://127.0.0.1:8000/api/customer/ |jq .results[1]
+vi .env
 ~~~
 
 npm start
 
 ### .env files
 
-For react.js, frontend/.env:
-REACT_APP_API_SERVER=http://v147.h.ccmp.jp:8000
 
 For django, backend/backend/.env:
 ORIGIN_SERVER=http://v147.h.ccmp.jp:3000
