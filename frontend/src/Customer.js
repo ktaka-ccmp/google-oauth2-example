@@ -1,10 +1,12 @@
 import React, {
     useState,
     useEffect,
+    useContext,
 } from 'react';
 import axios from 'axios';
 
 import { Table } from 'reactstrap';
+import { AuthContext } from './AuthProvider'
 
 const CustomerTable = ({ items, loading }) => {
     if (loading) {
@@ -34,6 +36,7 @@ const CustomerTable = ({ items, loading }) => {
 
 const CustomerList = () => {
     
+    const { apiAxios } = useContext(AuthContext);
     const [items, setItems] = useState([]);
     const [loading, setLoading] = useState(false);
 
@@ -41,7 +44,7 @@ const CustomerList = () => {
 	const fetchItems = async () => {
 	    setLoading(true);
 
-	    await axios.get(`${process.env.REACT_APP_API_SERVER}/api/customer/`)
+	    await apiAxios.get(`/api/customer/`)
 		.then(res => {
 		    setItems(res.data.results);
 		    setLoading(false);

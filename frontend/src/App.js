@@ -2,8 +2,15 @@ import { Routes, Route, Link } from 'react-router-dom';
 import Customer from './Customer';
 import { Table, Container } from 'reactstrap';
 
+import {
+    AuthProvider,
+    UserLogout,
+    UserLogin,
+    RequireAuth,
+} from './AuthProvider'
+
 const NoMatch = () => {
-    return <h2>Page doesn't exist.</h2>;
+    return <h2>Page does not exist.</h2>;
 }
 
 const Top = () => {
@@ -12,22 +19,31 @@ const Top = () => {
 
 const App = () => {
   return (
-      <div>
+      <AuthProvider>
+	  <div>
 	  <Container fluid="sm">
 	      <Table borderless responsive size="sm">
 		  <tbody>
 		      <tr><td><Link to={`/`}>Top</Link></td></tr>
 		      <tr><td><Link to={`/customer`}>Customer</Link></td></tr>
+		      {/*
+		      <tr><td><Link to={`/login`}>Login</Link></td></tr>
+		       */}
 		  </tbody>
 	      </Table>
-	      
+	      <UserLogout />
+
 	      <Routes>
 		  <Route index element={ <Top /> } />
-		  <Route path="/customer" element={ <Customer /> } />
+		  <Route path="/login" element={<UserLogin />} />
+		  <Route element={<RequireAuth />}>
+		      <Route path="/customer" element={ <Customer /> } />
+		  </Route>
 		  <Route path="*" element={<NoMatch />} />
 	      </Routes>
 	  </Container>
-      </div>
+	  </div>
+      </AuthProvider>
   );
 }
 
