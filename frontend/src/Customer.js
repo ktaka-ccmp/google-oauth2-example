@@ -1,10 +1,4 @@
-import React, {
-    useState,
-    useEffect,
-    useContext,
-} from 'react';
-import axios from 'axios';
-
+import { useState, useMemo, useContext } from 'react';
 import { Table } from 'reactstrap';
 import { AuthContext } from './AuthProvider'
 
@@ -40,7 +34,7 @@ const CustomerList = () => {
     const [items, setItems] = useState([]);
     const [loading, setLoading] = useState(false);
 
-    useEffect(() => {
+    useMemo(() => {
 	const fetchItems = async () => {
 	    setLoading(true);
 
