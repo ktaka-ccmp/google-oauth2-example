@@ -1,7 +1,8 @@
 import { Routes, Route, Link } from 'react-router-dom';
-import Customer from './Customer';
 import { Table, Container } from 'reactstrap';
-import { AuthProvider, UserLogout, UserLogin, RequireAuth } from './AuthProvider'
+
+import Customer from './Customer';
+import { AuthProvider, LogoutButton, UserLogin, RequireAuth } from './AuthProvider'
 
 const NoMatch = () => {
     return <h2>Page does not exist.</h2>;
@@ -22,7 +23,7 @@ const App = () => {
 		  </tbody>
 	      </Table>
 
-	      <UserLogout />
+	      <LogoutButton />
 
 	      <Routes>
 		  <Route index element={ <Top /> } />

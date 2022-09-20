@@ -10,7 +10,6 @@ export const AuthProvider = ({ children }) => {
     const location = useLocation();
 
     const [user, setUser] = useState(null);
-    const [Loading, setLoading] = useState(false);
     const [LoadUser, setLoadUser] = useState(true);
 
     const apiAxios = axios.create({
@@ -36,9 +35,7 @@ export const AuthProvider = ({ children }) => {
 		setUser(res.data);
 		setLoadUser(false);
 	    })
-	    .catch(error => {
-		console.log(error.response)
-	    })
+	    .catch(error => console.log(error.response))
     };
 
     const backendAuth = (response) => {
@@ -46,15 +43,10 @@ export const AuthProvider = ({ children }) => {
 	const data=JSON.stringify(response, null, 2);
 	console.log("response\n", JSON.stringify(response, null, 2));
 
-	setLoading(true);
-	apiAxios.post(
-	    `/api/login/`,
-	    data,
-	)
+	apiAxios.post(`/api/login/`, data, )
 	    .then(res => {
 		getUser();
 		console.log("Backend Auth: ", res)
-		setLoading(false);
 		navigate(origin);
 	    })
 	    .catch(error => {
@@ -66,19 +58,14 @@ export const AuthProvider = ({ children }) => {
 
     const handleLogout = () => {
 	googleLogout();
-
 	apiAxios.get(`/api/logout/`)
-	    .catch(error => {
-		console.log("Logout failed: ", error)
-	    })
-
+	    .catch(error => console.log("Logout failed: ", error))
 	window.location.reload();
     }
 
     const value = {
 	onLogin: backendAuth,
 	onLogout: handleLogout,
-	Loading,
 	LoadUser,
 	user,
 	getUser,
@@ -92,7 +79,7 @@ export const AuthProvider = ({ children }) => {
     );
 };
 
-export const UserLogout = () => {
+export const LogoutButton = () => {
     const { user, getUser, onLogout } = useContext(AuthContext);
 
     useMemo(() => {
@@ -131,14 +118,13 @@ export const UserLogin = () => {
 };
 
 export const RequireAuth = ({ children }) => {
-    const { Loading, LoadUser, user } = useContext(AuthContext);
+    const { LoadUser, user } = useContext(AuthContext);
     const location = useLocation();
 
-    console.log("Loading: ", Loading, "LoadUser: ", LoadUser, " user: ", user)
+    console.log("LoadUser: ", LoadUser, " user: ", user)
 
-    if (!Loading && !LoadUser && !user) {
-	    return <Navigate to="/login" replace state={{ from: location }} />
+    if (LoadUser || user) {
+	return <Outlet />
     }
-
-    return <Outlet />
+    return <Navigate to="/login" replace state={{ from: location }} />
 };
