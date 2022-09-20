@@ -1,7 +1,4 @@
-import React, {
-    useState,
-    useEffect,
-} from 'react';
+import { useState, useMemo, useContext } from 'react';
 import axios from 'axios';
 
 import { Table } from 'reactstrap';
@@ -37,7 +34,7 @@ const CustomerList = () => {
     const [items, setItems] = useState([]);
     const [loading, setLoading] = useState(false);
 
-    useEffect(() => {
+    useMemo(() => {
 	const fetchItems = async () => {
 	    setLoading(true);
 
