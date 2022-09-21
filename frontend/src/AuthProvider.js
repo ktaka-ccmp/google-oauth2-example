@@ -1,4 +1,4 @@
-import { useState, useMemo, useContext, createContext } from 'react';
+import { useState, useRef, useMemo, useContext, createContext } from 'react';
 import { Navigate, useNavigate, useLocation, Outlet } from 'react-router-dom';
 import { useGoogleOneTapLogin, GoogleLogin, googleLogout } from '@react-oauth/google';
 import axios from 'axios';
@@ -9,20 +9,18 @@ export const AuthProvider = ({ children }) => {
     const navigate = useNavigate();
     const location = useLocation();
 
-    const [user, setUser] = useState(null);
     const [LoadUser, setLoadUser] = useState(true);
+    const userRef = useRef(null);
 
     const apiAxios = axios.create({
 	baseURL: `${process.env.REACT_APP_API_SERVER}`,
 	withCredentials: true,
     });
 
-    apiAxios.interceptors.response.use(response => {
-	return response
-    }, (error) => {
+    apiAxios.interceptors.response.use(response => {return response}, error => {
 	if (error.response.status === 403) {
 	    console.log("Interceptor: Reauthenticating...");
-	    setUser(null);
+	    userRef.current = null;
 	    navigate('/login', {state: { from: location }}, {replace: true});
 	}
 	return Promise.reject(error);
@@ -32,11 +30,15 @@ export const AuthProvider = ({ children }) => {
 	setLoadUser(true);
 	apiAxios.get(`/api/user/`)
 	    .then(res => {
-		setUser(res.data);
+		userRef.current = res.data
 		setLoadUser(false);
 	    })
 	    .catch(error => console.log(error.response))
     };
+
+    useMemo(() => {
+	getUser();
+    }, []);
 
     const backendAuth = (response) => {
 	const origin = location.state?.from?.pathname || '/' ;
@@ -67,8 +69,7 @@ export const AuthProvider = ({ children }) => {
 	onLogin: backendAuth,
 	onLogout: handleLogout,
 	LoadUser,
-	user,
-	getUser,
+	user: userRef.current,
 	apiAxios,
     };
 
@@ -80,12 +81,7 @@ export const AuthProvider = ({ children }) => {
 };
 
 export const LogoutButton = () => {
-    const { user, getUser, onLogout } = useContext(AuthContext);
-
-    useMemo(() => {
-	getUser();
-    }, []);
-
+    const { user, onLogout } = useContext(AuthContext);
     return (
 	<>
 	    {user && (
