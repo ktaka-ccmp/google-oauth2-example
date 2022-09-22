@@ -10,5 +10,10 @@ router.register(r'customer', views.CustomerViewSet)
 urlpatterns = [
     path(r'api/', include(router.urls)),
     path(r'api/docs/', include_docs_urls('Api docs')),
-#    path('api2/', include('rest_framework.urls', namespace='rest_framework')),
+]
+
+urlpatterns += [
+    path('api/login/', views.ApiLoginView.as_view(), name="api_login"),
+    path('api/logout/', views.ApiLogoutView.as_view(), name="api_logout"),
+    path('api/user/', views.ApiGetUserView.as_view(), name="api_user"),
 ]
