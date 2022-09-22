@@ -6,20 +6,19 @@
 
 Prepare venv and install packages
 ~~~
+cd backend/
 python3 -m venv .venv
 source .venv/bin/activate
 pip install django djangorestframework django-cors-headers coreapi python-decouple
 ~~~
 
-Edit, backend/backend/.env
+Edit, backend/.env
 ~~~
-ORIGIN_SERVER=http://react.example.com:3000
+ORIGIN_SERVER=http://localhost:3000
 ~~~
-(Replace 'react.example.com:3000' with your server & port.)\\
 
 Run server
 ~~~
-cd backend/
 python manage.py runserver [::]:8000
 ~~~
 
@@ -54,9 +53,8 @@ npm install axios react-router-dom reactstrap bootstrap
 
 Edit frontend/.env
 ~~~
-REACT_APP_API_SERVER=http://api.example.com:8000
+REACT_APP_API_SERVER=http://localhost:8000
 ~~~
-(Replace 'api.example.com:8000' with your server & port.)\\
 
 Run server
 ~~~
@@ -97,7 +95,7 @@ Create database
 ./backend/manage.py migrate
 ~~~
 
-Generate dummy data using model\_bakery
+Generate dummy data using model\_bakery (https://github.com/model-bakers/model_bakery)
 ~~~
 pip install model_bakery
 vi backend/restapi/test-models.py
@@ -160,7 +158,6 @@ PORT=3000 npm start
 ~~~
 
 Test => See the page using a browser.
-
 
 
 ## Directory structure
