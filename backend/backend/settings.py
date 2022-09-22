@@ -136,5 +136,15 @@ REST_FRAMEWORK = {
 
 CORS_ORIGIN_WHITELIST = [
     config('ORIGIN_SERVER'),
+#    'https://v147.h.ccmp.jp:3001',
 ]
+
+AUTHENTICATION_BACKENDS = [
+    'restapi.backend.GIStoken.GISBackend',
+    'django.contrib.auth.backends.ModelBackend',
+]
+
+GOOGLE_OAUTH2_CLIENT_ID=config('GOOGLE_OAUTH2_CLIENT_ID')
+SESSION_COOKIE_AGE = 600
+CORS_ALLOW_CREDENTIALS = True
 
