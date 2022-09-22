@@ -33,7 +33,7 @@ export const AuthProvider = ({ children }) => {
 		userRef.current = res.data
 		setLoadUser(false);
 	    })
-	    .catch(error => console.log(error.response))
+	    .catch(error => console.log("getUser faild: ", error.response))
     };
 
     useMemo(() => {
@@ -74,7 +74,7 @@ export const AuthProvider = ({ children }) => {
     };
 
     return (
-	<AuthContext.Provider value={value}>
+	<AuthContext.Provider value={value} >
 	    {children}
 	</AuthContext.Provider>
     );
@@ -82,6 +82,7 @@ export const AuthProvider = ({ children }) => {
 
 export const LogoutButton = () => {
     const { user, onLogout } = useContext(AuthContext);
+    console.log("LogoutButton user:",user)
     return (
 	<>
 	    {user && (
@@ -117,7 +118,7 @@ export const RequireAuth = ({ children }) => {
     const { LoadUser, user } = useContext(AuthContext);
     const location = useLocation();
 
-    console.log("LoadUser: ", LoadUser, " user: ", user)
+    console.log("RequireAuth: \nLoadUser => ", LoadUser, "\nuser => ", user)
 
     if (LoadUser || user) {
 	return <Outlet />
