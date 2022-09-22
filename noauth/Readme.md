@@ -4,7 +4,7 @@
 
 ### Django (backend)
 
-Prepare venv and install packages
+Prepare python venv and install packages
 ~~~
 cd backend/
 python3 -m venv .venv
@@ -12,14 +12,14 @@ source .venv/bin/activate
 pip install django djangorestframework django-cors-headers coreapi python-decouple
 ~~~
 
-Edit, backend/.env
+Edit .env
 ~~~
 ORIGIN_SERVER=http://localhost:3000
 ~~~
 
 Run server
 ~~~
-python manage.py runserver [::]:8000
+./manage.py runserver [::]:8000
 ~~~
 
 (Optional) Test to see if it's working
@@ -40,7 +40,7 @@ python manage.py runserver [::]:8000
 
 ### React (frontend)
 
-Install node.js (Here is an example for Debian.)
+If not yet installed, install node.js. (Here is an example for Debian.)
 ~~~
 curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
 sudo apt-get install -y nodejs
@@ -48,10 +48,11 @@ sudo apt-get install -y nodejs
 
 Module install
 ~~~
+cd frontend
 npm install axios react-router-dom reactstrap bootstrap
 ~~~
 
-Edit frontend/.env
+Edit .env
 ~~~
 REACT_APP_API_SERVER=http://localhost:8000
 ~~~
