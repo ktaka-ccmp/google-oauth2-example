@@ -115,11 +115,6 @@ gunicorn backend.asgi:application -k uvicorn.workers.UvicornWorker -b [::]:8000 
 
 ### React (frontend)
 
-Install extra packages.
-~~~
-pip install uvicorn gunicorn
-~~~
-
 Edit .env in the directory where package.json exists.
 ~~~
 ORIGIN_SERVER=https://api.example.com:8000
