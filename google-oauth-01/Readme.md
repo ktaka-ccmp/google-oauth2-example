@@ -1,6 +1,20 @@
-# React.js + Django Rest Framework with Google Identity Service
+# Authentication with Sign in with Google
 
-## Develope on localhost
+The content of this page describes how to test Authentication with Sign in with Google either on localhost or servers other than localhost.
+It seems using HTTPS is required for servers other than local hosts.
+
+## localhost
+
+### Setup OAuth configuration on Google APIs console
+
+Open https://console.cloud.google.com/apis/credentials, then go to Credentials -> OAuth 2.0 Client IDs, then add both of the following to the Authorized JavaScript origins box.
+
+~~~
+http://localhost
+http://localhost:3000
+~~~
+
+For details, see https://developers.google.com/identity/gsi/web/guides/get-google-api-clientid.
 
 ### Django (backend)
 
@@ -12,7 +26,7 @@ source .venv/bin/activate
 pip install django djangorestframework django-cors-headers coreapi python-decouple google-auth
 ~~~
 
-Edit .env
+Edit .env in the directory where manage.py exists.
 ~~~
 ORIGIN_SERVER=http://localhost:3000
 GOOGLE_OAUTH2_CLIENT_ID=888888888888-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx.apps.googleusercontent.com
@@ -37,7 +51,7 @@ cd frontend
 npm install axios react-router-dom reactstrap bootstrap @react-oauth/google
 ~~~
 
-Edit .env
+Edit .env in the directory where package.json exists.
 ~~~
 REACT_APP_API_SERVER=http://localhost:8000
 REACT_APP_GOOGLE_OAUTH2_CLIENT_ID=888888888888-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx.apps.googleusercontent.com
@@ -50,23 +64,25 @@ PORT=3000 npm start
 
 ## Develope on testing server other than localhost
 
-When we want to test Google OAuth
-
-
-Let's suppose we want to run on the following servers.
-backend: api.example.net:8000
-frontend: web.example.net:3000
-
-### Register on Google
+When we use "Sign in with Google" on servers other than the localhost, it seems mandatory to use HTTPS.
 https://stackoverflow.com/a/70241409
 
-From Google Cloud Console web page,
-Go APIs & Services -> Credentials -> OAuth 2.0 Client IDs -> Authorized JavaScript origins
+Let's suppose we want to run on the following servers.
+~~~
+backend: api.example.net:8000
+frontend: web.example.net:3000
+~~~
+
+### Setup OAuth configuration on Google APIs console
+
+Open https://console.cloud.google.com/apis/credentials, then go to Credentials -> OAuth 2.0 Client IDs, then add both of the following to the Authorized JavaScript origins box.
 
 ~~~
 https://web.example.com
 https://web.example.com:3000
 ~~~
+
+For details, see https://developers.google.com/identity/gsi/web/guides/get-google-api-clientid.
 
 ### SSL Certificates are needed
 
@@ -114,4 +130,3 @@ Run server in the directory where package.json exists.
 ~~~
 HTTPS=true SSL_CRT_FILE=${SOMEWHERE}/CERT/fullchain.pem SSL_KEY_FILE=${SOMEWHERE}/CERT/privkey.pem PORT=3000 npm start
 ~~~
-
