@@ -1,6 +1,6 @@
-# React.js + Django Rest Framework
+# React.js + Django Rest Framework without authentication
 
-## Howto run Reac.js+Django app in this repository.
+## Howto run app in this repository.
 
 ### Django (backend)
 
@@ -61,7 +61,6 @@ Run server
 ~~~
 PORT=3000 npm start 
 ~~~
-
 
 # How this repo was created.
 
