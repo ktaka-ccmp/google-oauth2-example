@@ -75,7 +75,7 @@ frontend: web.example.net:3000
 
 ### Setup OAuth configuration on Google APIs console
 
-Open https://console.cloud.google.com/apis/credentials, then go to Credentials -> OAuth 2.0 Client IDs, then add both of the following to the Authorized JavaScript origins box.
+Open https://console.cloud.google.com/apis/credentials, go to OAuth 2.0 Client IDs, then add both of the following to the Authorized JavaScript origins box.
 
 ~~~
 https://web.example.com

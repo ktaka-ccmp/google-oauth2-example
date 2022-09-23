@@ -1,6 +1,6 @@
 # React.js + Django Rest Framework
 
-## Howto run Reac.js+Django pages using this repo.
+## Howto run Reac.js+Django app in this repository.
 
 ### Django (backend)
 
@@ -12,7 +12,7 @@ source .venv/bin/activate
 pip install django djangorestframework django-cors-headers coreapi python-decouple
 ~~~
 
-Edit .env
+Edit .env in the directory where manage.py exists.
 ~~~
 ORIGIN_SERVER=http://localhost:3000
 ~~~
@@ -52,7 +52,7 @@ cd frontend
 npm install axios react-router-dom reactstrap bootstrap
 ~~~
 
-Edit .env
+Edit .env in the directory where package.json exists.
 ~~~
 REACT_APP_API_SERVER=http://localhost:8000
 ~~~
@@ -63,7 +63,7 @@ PORT=3000 npm start
 ~~~
 
 
-## Prep. How this repo was created.
+# How this repo was created.
 
 ### Django
 
@@ -88,15 +88,15 @@ backend/restapi/serializers.py
 backend/restapi/views.py
 backend/restapi/urls.py
 backend/restapi/models.py
-backend/backend/.env
+backend/.env
 ~~~
 
-Create database
+Create database.
 ~~~
 ./backend/manage.py migrate
 ~~~
 
-Generate dummy data using model\_bakery (https://github.com/model-bakers/model_bakery)
+Generate dummy data using model\_bakery (https://github.com/model-bakers/model_bakery).
 ~~~
 pip install model_bakery
 vi backend/restapi/test-models.py
@@ -116,7 +116,7 @@ curl -H 'Accept: application/json' http://localhost:8000/api/customer
 
 ### React.js
 
-Install node.js
+Install node.js on Debian.
 ~~~
 curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
 sudo apt-get install -y nodejs
@@ -159,7 +159,6 @@ PORT=3000 npm start
 ~~~
 
 Test => See the page using a browser.
-
 
 ## Directory structure
 
