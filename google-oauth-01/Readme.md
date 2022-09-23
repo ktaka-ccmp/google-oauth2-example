@@ -1,6 +1,6 @@
 # Authentication using Sign in with Google
 
-The content of this page describes how to test Authentication using Sign in with Google either on localhost or servers other than localhost.
+The content of this page describes how to test apps in this repository, using Sign in with Google on localhost or servers other than localhost.
 It seems using HTTPS is required for servers other than local hosts.
 
 ## Localhost
