@@ -12,10 +12,10 @@ There are the following components and a context in this file:
 * UserLogin: a component to show the "Sign with Google button" and "Google One Tap."
 * RequireAuth: a wrapper component redirecting an unauthenticated user to the login page.
 
-Here are some detail explanations regarding key features.
+Here are some detailed explanations regarding key features.
 
-Create an axios instance, which always send credential.
-The interceptor redirects to "/login" when data fetching from API server fails with 403.
+Create an axios instance, which always sends credential.
+The interceptor redirects to "/login" when data fetching from the API server fails with 403.
 
 ~~~
     const apiAxios = axios.create({
@@ -34,7 +34,7 @@ The interceptor redirects to "/login" when data fetching from API server fails w
 ~~~
 
 The backendAuth is a callback function that sends Google's auth credential to the login endpoint of the API server.
-Then the backend server verifies the credential and creates a session.
+We expect the backend server to verify the credential and set a session id as a cookie.
 
 ~~~
     const backendAuth = (response) => {
@@ -55,8 +55,9 @@ Then the backend server verifies the credential and creates a session.
     }
 ~~~
 
-The getUser function fetches user data from the API server.
-When the user data is null, we can regard her as unauthenticated.
+The getUser function tries to fetch user data from the API server.
+If there is a valid session in the cookie, we can obtain user data, meaning the user is as authenticated.
+When the obtained user data is null, we can regard her as unauthenticated.
 
 ~~~
     const getUser = () => {
@@ -149,9 +150,12 @@ const App = () => {
 
 ## frontend #2 (google-oauth-02/frontend)
 
+The only significant difference from frontend #1 is the UserLogin component in AuthProvider.js, which is implemented using [Google's client library](https://developers.google.com/identity/gsi/web/guides/client-library).
+
 ### public/index.html
 
-At the end of <head></head> section, we include script library provided by Google.
+First, we need to load the library.
+At the end of `<head></head>` section, we include the client script provided by Google.
 
 ~~~
    <script src="https://accounts.google.com/gsi/client" async defer></script>
@@ -160,7 +164,7 @@ At the end of <head></head> section, we include script library provided by Googl
 
 ### AuthProvider.js
 
-The only significant difference from frontend #1 is the UserLogin component, which is implemented using [Google's client library](https://developers.google.com/identity/gsi/web/guides/client-library).
+Then, implement the "Sign with Google button" and "Google One Tap."
 Please note that the line "/* global google */" is essential, i.e., without this, react won't know the functions starting with "google.".
 
 ~~~
@@ -195,29 +199,21 @@ export const UserLogin = () => {
 
 The backend codes are the same for "google-oauth-01" and "google-oauth-02."
 
+### restapi/views.py
+
+ApiLoginView receives credential(JWT) signed by google as the request body.
+It authenticates a user written in the credential(auth.authenticate), then creates a session for that user that is set as a cookie(auth.login).
+
+ApiLogoutView clears the session and unset the cookie.
+
+ApiGetUserView returns user data as a response if the request have a valid session cookie set in the header.
+
 ~~~
-from django.shortcuts import render
-from .models import Customer
-from rest_framework import viewsets
-from restapi.serializers import CustomerSerializer
-
-from django.contrib import auth
-
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated
-from restapi.serializers import UserSerializer
-
-class CustomerViewSet(viewsets.ModelViewSet):
-    queryset = Customer.objects.all()
-    serializer_class = CustomerSerializer
-    permission_classes = (IsAuthenticated,)
-
 class ApiLoginView(APIView):
     def post(self, request):
         user = auth.authenticate(request)
         if user:
-            request.user = user # what is this?
+            request.user = user
             auth.login(request, user)
         else:
             return Response({"Error: Auth failed"})
@@ -243,21 +239,9 @@ class ApiGetUserView(APIView):
             return Response(None)
 ~~~
 
+### restapi/urls.py
+
 ~~~
-from django.urls import path, include
-from rest_framework import routers
-from rest_framework.documentation import include_docs_urls
-
-from . import views
-
-router = routers.DefaultRouter()
-router.register(r'customer', views.CustomerViewSet)
-
-urlpatterns = [
-    path(r'api/', include(router.urls)),
-    path(r'api/docs/', include_docs_urls('Api docs')),
-]
-
 urlpatterns += [
     path('api/login/', views.ApiLoginView.as_view(), name="api_login"),
     path('api/logout/', views.ApiLogoutView.as_view(), name="api_logout"),
@@ -265,22 +249,17 @@ urlpatterns += [
 ]
 ~~~
 
+### restapi/serializer.py
 
 ~~~
-from rest_framework import serializers
-from .models import Customer
-
-class CustomerSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Customer
-        fields = ('__all__')
-
 from django.contrib.auth.models import User
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ('username', 'email', 'first_name', 'last_name')
 ~~~
+
+### restapi/backend/GIStoken.py
 
 ~~~
 import json
@@ -333,6 +312,8 @@ class GISBackend(BaseBackend):
         except User.DoesNotExist:
             return None
 ~~~
+
+### backend/backend/settings.py
 
 ~~~
 AUTHENTICATION_BACKENDS = [
