@@ -6,11 +6,11 @@
 
 Most of the authentication-related codes are contained in AuthProvider.js.
 There are the following components and a context in this file:
-    AuthContext: a context to pass auth-related data between components.
-    AuthProvider: main functions related to authentication.
-    LogoutButton: a component to show the "Sign Out" button.
-    UserLogin: a component to show the "Sign with Google button" and "Google One Tap."
-    RequireAuth: a wrapper component redirecting an unauthenticated user to the login page.
+* AuthContext: a context to pass auth-related data between components.
+* AuthProvider: main functions related to authentication.
+* LogoutButton: a component to show the "Sign Out" button.
+* UserLogin: a component to show the "Sign with Google button" and "Google One Tap."
+* RequireAuth: a wrapper component redirecting an unauthenticated user to the login page.
 
 Here are some detail explanations regarding key features.
 
@@ -115,7 +115,7 @@ export const RequireAuth = ({ children }) => {
 
 ### App.js
 
-The authentication mechanisms in AuthProvider.js are made effective in App.js by wrapping components using <GoogleOAuthProvider>, <AuthProvider> and <Route element={<RequireAuth />}>.
+The authentication mechanisms in AuthProvider.js are made effective in App.js by wrapping components using `<GoogleOAuthProvider>`, `<AuthProvider>` and `<Route element={<RequireAuth />}>`.
 
 ~~~
 const App = () => {
