@@ -1,5 +1,6 @@
 import { Routes, Route, Link } from 'react-router-dom';
 import { Table, Container } from 'reactstrap';
+import { GoogleOAuthProvider } from '@react-oauth/google';
 
 import Customer from './Customer';
 import { AuthProvider, LogoutButton, UserLogin, RequireAuth } from './AuthProvider'
@@ -14,6 +15,7 @@ const Top = () => {
 
 const App = () => {
   return (
+      <GoogleOAuthProvider clientId={process.env.REACT_APP_GOOGLE_OAUTH2_CLIENT_ID}>
       <AuthProvider>
 	  <Container fluid="sm">
 	      <Table borderless responsive size="sm">
@@ -35,6 +37,7 @@ const App = () => {
 	      </Routes>
 	  </Container>
       </AuthProvider>
+      </GoogleOAuthProvider>
   );
 }
 
