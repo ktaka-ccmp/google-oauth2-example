@@ -1,9 +1,10 @@
 # Authentication using Sign in with Google
 
-The content of this page describes how to test apps in this repository, using Sign in with Google on localhost or servers other than localhost.
-It seems using HTTPS is required for servers other than local hosts.
+The content of this page describes how to test apps in this repository using Sign in with Google.
+Extra steps are needed when we run apps on servers other than localhost.
+It seems using HTTPS is mandatory for servers other than local hosts.
 
-## Localhost
+## How to test apps on localhost
 
 ### Setup OAuth configuration on Google APIs console
 
@@ -62,7 +63,7 @@ Run server
 PORT=3000 npm start 
 ~~~
 
-## Servers other than localhost
+## Extra steps needed for servers other than localhost
 
 When we use "Sign in with Google" on servers other than localhost, it seems we must use HTTPS.
 See https://stackoverflow.com/a/70241409.
