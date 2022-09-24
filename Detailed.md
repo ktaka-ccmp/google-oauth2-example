@@ -2,6 +2,9 @@
 
 ## frontend #1 (google-oauth-01/frontend)
 
+The ["@react-oauth/google" library](https://github.com/MomenSherif/react-oauth) is used for google-oauth-01/frontend,
+whereas [Google's client library](https://developers.google.com/identity/gsi/web/guides/client-library) is used for google-oauth-02/frontend.
+
 ### AuthProvider.js
 
 Most of the authentication-related codes are contained in AuthProvider.js.
@@ -165,7 +168,7 @@ At the end of `<head></head>` section, we include the client script provided by 
 ### AuthProvider.js
 
 Then, implement the "Sign with Google button" and "Google One Tap."
-Please note that the line "/* global google */" is essential, i.e., without this, react won't know the functions starting with "google.".
+Please note that the line "/* global google */" is essential, i.e., without this, react won't recognize the functions starting with "google.".
 
 ~~~
 export const UserLogin = () => {
@@ -202,7 +205,7 @@ The backend codes are the same for "google-oauth-01" and "google-oauth-02."
 ### restapi/views.py
 
 ApiLoginView receives credential(JWT) signed by google as the request body.
-It authenticates a user written in the credential(auth.authenticate), then creates a session for that user that is set as a cookie(auth.login).
+It authenticates a user written in the credential(auth.authenticate), then creates a session cookie for that user(auth.login).
 
 ApiLogoutView clears the session and unset the cookie.
 
@@ -313,7 +316,7 @@ class GISBackend(BaseBackend):
             return None
 ~~~
 
-### backend/backend/settings.py
+### backend/settings.py
 
 ~~~
 AUTHENTICATION_BACKENDS = [
