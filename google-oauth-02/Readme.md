@@ -2,7 +2,7 @@
 
 The content of this page describes how to test apps in this repository using Sign in with Google.
 Extra steps are needed when we run apps on servers other than localhost.
-It seems using HTTPS is mandatory for servers other than local hosts.
+It seems using HTTPS is mandatory for servers other than localhost.
 
 ## How to test apps on localhost
 
