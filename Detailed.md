@@ -1,13 +1,13 @@
-# Detailed expranation of authentication related codes
-
-## frontend #1 (google-oauth-01/frontend)
+# A detailed explanation of authentication-related codes
 
 The ["@react-oauth/google" library](https://github.com/MomenSherif/react-oauth) is used for google-oauth-01/frontend,
 whereas [Google's client library](https://developers.google.com/identity/gsi/web/guides/client-library) is used for google-oauth-02/frontend.
 
+## frontend #1 (google-oauth-01/frontend)
+
 ### AuthProvider.js
 
-Most of the authentication-related codes are contained in AuthProvider.js.
+Most of the authentication-related codes in the frontend React.js app are contained in [AuthProvider.js](google-oauth-01/frontend/src/AuthProvider.js).
 There are the following components and a context in this file:
 * AuthContext: a context to pass auth-related data between components.
 * AuthProvider: main functions related to authentication.
@@ -15,9 +15,9 @@ There are the following components and a context in this file:
 * UserLogin: a component to show the "Sign with Google button" and "Google One Tap."
 * RequireAuth: a wrapper component redirecting an unauthenticated user to the login page.
 
-Here are some detailed explanations regarding key features.
+Here are some of the key features in AuthProvider.js.
 
-Create an axios instance, which always sends credential.
+Create an axios instance, which always sends credential if it's available.
 The interceptor redirects to "/login" when data fetching from the API server fails with 403.
 
 ~~~
@@ -59,7 +59,7 @@ We expect the backend server to verify the credential and set a session id as a 
 ~~~
 
 The getUser function tries to fetch user data from the API server.
-If there is a valid session in the cookie, we can obtain user data, meaning the user is as authenticated.
+If there is a valid session in the cookie, we can obtain user data, meaning the user is authenticated.
 When the obtained user data is null, we can regard her as unauthenticated.
 
 ~~~
@@ -167,7 +167,7 @@ At the end of `<head></head>` section, we include the client script provided by 
 
 ### AuthProvider.js
 
-Then, implement the "Sign with Google button" and "Google One Tap."
+Then, implement the "Sign with Google button" and "Google One Tap" using Google's library.
 Please note that the line "/* global google */" is essential, i.e., without this, react won't recognize the functions starting with "google.".
 
 ~~~
@@ -200,14 +200,19 @@ export const UserLogin = () => {
 
 ## backend
 
+The functionality required by the Django backends are the flowings:
+* [Verify credential.](https://developers.google.com/identity/gsi/web/guides/verify-google-id-token)
+* Create the user if it does not exist.
+* Set a session cookie for the user.
+
 The backend codes are the same for "google-oauth-01" and "google-oauth-02."
 
 ### restapi/views.py
 
 ApiLoginView receives credential(JWT) signed by google as the request body.
-It authenticates a user written in the credential(auth.authenticate), then creates a session cookie for that user(auth.login).
+It verifies credential(auth.authenticate), then creates a session cookie for that user(auth.login).
 
-ApiLogoutView clears the session and unset the cookie.
+ApiLogoutView clears the session cookie.
 
 ApiGetUserView returns user data as a response if the request have a valid session cookie set in the header.
 
@@ -242,27 +247,11 @@ class ApiGetUserView(APIView):
             return Response(None)
 ~~~
 
-### restapi/urls.py
-
-~~~
-urlpatterns += [
-    path('api/login/', views.ApiLoginView.as_view(), name="api_login"),
-    path('api/logout/', views.ApiLogoutView.as_view(), name="api_logout"),
-    path('api/user/', views.ApiGetUserView.as_view(), name="api_user"),
-]
-~~~
-
-### restapi/serializer.py
-
-~~~
-from django.contrib.auth.models import User
-class UserSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User
-        fields = ('username', 'email', 'first_name', 'last_name')
-~~~
-
 ### restapi/backend/GIStoken.py
+
+The GIStoken.py provides authentication backend functions to verify the credential and create the user if it does not yet exist.
+
+The id_token.verify_oauth2_token function called form VerifyToken, is to verify token in the way that is suggested by [this](https://developers.google.com/identity/gsi/web/guides/verify-google-id-token).
 
 ~~~
 import json
@@ -314,6 +303,30 @@ class GISBackend(BaseBackend):
             return User.objects.get(pk=user_id)
         except User.DoesNotExist:
             return None
+~~~
+
+### restapi/urls.py
+
+The API endpoint urls are defined here.
+
+~~~
+urlpatterns += [
+    path('api/login/', views.ApiLoginView.as_view(), name="api_login"),
+    path('api/logout/', views.ApiLogoutView.as_view(), name="api_logout"),
+    path('api/user/', views.ApiGetUserView.as_view(), name="api_user"),
+]
+~~~
+
+### restapi/serializer.py
+
+This serializer defines what should be returned in the JSON response for the '/api/usr/' request.
+
+~~~
+from django.contrib.auth.models import User
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ('username', 'email', 'first_name', 'last_name')
 ~~~
 
 ### backend/settings.py
