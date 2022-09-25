@@ -10,23 +10,28 @@ whereas [Google's client library](https://developers.google.com/identity/gsi/web
 Most of the authentication-related codes in the frontend React.js app are contained in [AuthProvider.js](google-oauth-01/frontend/src/AuthProvider.js).
 Here I explain some of the key features in the code.
 
-Create an axios instance, which always sends credential if it's available.
-The interceptor redirects to "/login" when data fetching from the API server fails with 403.
+The UserLogin component is to show the "Sign in with Google button" and the "Google One Tap."
+The below is an implementation using the "@react-oauth/google" library.
 
 ~~~
-    const apiAxios = axios.create({
-	baseURL: `${process.env.REACT_APP_API_SERVER}`,
-	withCredentials: true,
+export const UserLogin = () => {
+    const { onLogin } = useContext(AuthContext);
+
+    useGoogleOneTapLogin({
+	onSuccess: r => onLogin(r),
+	onError: () => { console.log('Google Login Failed') }
     });
 
-    apiAxios.interceptors.response.use(response => {return response}, error => {
-	if (error.response.status === 403) {
-	    console.log("apiAxios failed. Redirecting to /login... ")
-	    userRef.current = null;
-	    navigate('/login', {state: { from: location }}, {replace: true});
-	}
-	return Promise.reject(error);
-    });
+    return (
+	<div className="App">
+	    <GoogleLogin
+		theme="filled_black" shape="pill"
+		onSuccess={onLogin}
+		onError={() => { console.log('Google Login Failed') }}
+	    />
+	</div>
+    );
+};
 ~~~
 
 The backendAuth is a callback function that sends Google's auth credential to the login endpoint of the API server.
@@ -51,6 +56,26 @@ We expect the backend server to verify the credential and set a session cookie.
     }
 ~~~
 
+An axios instance with the following property defined is shared throughout this app:
+* If there is a session cookie, it always sends it in communication with the API server.
+* The interceptor redirects to "/login" when data fetching from the API server fails with 403.
+
+~~~
+    const apiAxios = axios.create({
+	baseURL: `${process.env.REACT_APP_API_SERVER}`,
+	withCredentials: true,
+    });
+
+    apiAxios.interceptors.response.use(response => {return response}, error => {
+	if (error.response.status === 403) {
+	    console.log("apiAxios failed. Redirecting to /login... ")
+	    userRef.current = null;
+	    navigate('/login', {state: { from: location }}, {replace: true});
+	}
+	return Promise.reject(error);
+    });
+~~~
+
 The getUser function tries to fetch user data from the API server.
 If we already have a valid session cookie, we can obtain the user data, causing us to regard the user as authenticated.
 When the obtained user data is null, we can regard them as unauthenticated.
@@ -66,30 +91,6 @@ When the obtained user data is null, we can regard them as unauthenticated.
 	    })
 	    .catch(error => console.log("getUser faild: ", error.response))
     };
-~~~
-
-The UserLogin component is to show the "Sign in with Google button" and the "Google One Tap."
-The below is an implementation using the "@react-oauth/google" library.
-
-~~~
-export const UserLogin = () => {
-    const { onLogin } = useContext(AuthContext);
-
-    useGoogleOneTapLogin({
-	onSuccess: r => onLogin(r),
-	onError: () => { console.log('Google Login Failed') }
-    });
-
-    return (
-	<div className="App">
-	    <GoogleLogin
-		theme="filled_black" shape="pill"
-		onSuccess={onLogin}
-		onError={() => { console.log('Google Login Failed') }}
-	    />
-	</div>
-    );
-};
 ~~~
 
 The RequireAuth is a wrapper component redirecting an unauthenticated user to the login page.
@@ -341,4 +342,3 @@ GOOGLE_OAUTH2_CLIENT_ID=config('GOOGLE_OAUTH2_CLIENT_ID')
 SESSION_COOKIE_AGE = 600
 CORS_ALLOW_CREDENTIALS = True
 ~~~
-

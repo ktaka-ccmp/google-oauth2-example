@@ -29,7 +29,7 @@ Here in this repository, I provide a simplified version of the code to illustrat
    - https://youtu.be/roxC8SMs7HU
    - https://developers.google.com/identity/gsi/web/guides/client-library
 
-## Without authentication
+## How the app works without authentication
 
 The app in this repository consists of two pages, "Top" and "Customer."
 
@@ -37,9 +37,9 @@ The app in this repository consists of two pages, "Top" and "Customer."
 
 ![Customer no-auth](./images/NoauthCustomer.png "Customer page - no auth")
 
-The Customer page, which fetches the data from the API server, is sensitive. Therefore it must not be seen by unauthenticated users.
+The Customer page, which fetches the data from the API server, is sensitive. Therefore the page must not be seen by unauthenticated users, and the API server must not provide requested data.
 
-## With authentication
+##  How the app works with authentication
 
 With authentication implemented, anonymous users' access is redirected to the login page, where they can sign in with their Google account.
 
