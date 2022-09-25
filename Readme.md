@@ -17,8 +17,8 @@ The authentication follows the following steps:
 1. React.js app receives the JWT from Google and sends it to the Django API endpoint.
 1. Django app verifies the JWT's signature using Google public certificate and trusts the user's information in the JWT's payload.
 1. Django creates the user if it does not exist and returns the user's information with a newly set session cookie.
-1. React.js app regards the user as authenticated and sets a property to always send the session cookie in the following communications with the Django API server.
-1. The Django API allows what is allowed for the user as long as the session is valid.
+1. React.js app regards the user as authenticated and sets a property to always send a request with the session cookie in the following API communications.
+1. The Django API app allows what is allowed for the user as long as the session is valid.
 
 Here in this repository, I provide a simplified version of the code to illustrate the authentication mechanism.
 
