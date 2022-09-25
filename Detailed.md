@@ -52,8 +52,8 @@ We expect the backend server to verify the credential and set a session cookie.
 ~~~
 
 The getUser function tries to fetch user data from the API server.
-If we already have a valid session cookie, we can obtain user data, causing us to regard the user as authenticated.
-When the obtained user data is null, we can regard her as unauthenticated.
+If we already have a valid session cookie, we can obtain the user data, causing us to regard the user as authenticated.
+When the obtained user data is null, we can regard them as unauthenticated.
 
 ~~~
     const getUser = () => {
@@ -68,7 +68,7 @@ When the obtained user data is null, we can regard her as unauthenticated.
     };
 ~~~
 
-The UserLogin component is to show the "Sign with Google button" and the "Google One Tap."
+The UserLogin component is to show the "Sign in with Google button" and the "Google One Tap."
 The below is an implementation using the "@react-oauth/google" library.
 
 ~~~
@@ -112,7 +112,7 @@ export const RequireAuth = ({ children }) => {
 
 ### App.js
 
-The authentication mechanisms in AuthProvider.js are made effective in App.js by wrapping components using `<GoogleOAuthProvider>`, `<AuthProvider>` and `<Route element={<RequireAuth />}>`.
+The authentication mechanisms in AuthProvider.js are made effective in [App.js](google-oauth-01/frontend/src/App.js) by wrapping components using `<GoogleOAuthProvider>`, `<AuthProvider>` and `<Route element={<RequireAuth />}>`.
 
 ~~~
 const App = () => {
@@ -146,11 +146,11 @@ const App = () => {
 
 ## frontend #2 (google-oauth-02/frontend)
 
-The only significant difference from frontend #1 is the UserLogin component in AuthProvider.js, which is implemented using [Google's client library](https://developers.google.com/identity/gsi/web/guides/client-library).
+The only significant difference from frontend #1 is the UserLogin component in [AuthProvider.js](google-oauth-02/frontend/src/AuthProvider.js), which is implemented using [Google's client library](https://developers.google.com/identity/gsi/web/guides/client-library).
 
 ### public/index.html
 
-First, we need to load the library.
+First, we need to load the library in [public/index.html](google-oauth-02/frontend/public/index.html).
 At the end of `<head></head>` section, we include the client script provided by Google.
 
 ~~~
@@ -160,7 +160,7 @@ At the end of `<head></head>` section, we include the client script provided by 
 
 ### AuthProvider.js
 
-Then, implement the "Sign with Google button" and "Google One Tap" using Google's library.
+Then, implement the "Sign in with Google button" and "Google One Tap" using Google's library.
 Please note that the line "/* global google */" is essential, i.e., without this, react won't recognize the functions starting with "google.".
 
 ~~~
@@ -202,10 +202,12 @@ The backend codes are the same for "google-oauth-01" and "google-oauth-02."
 
 ### restapi/views.py
 
-ApiLoginView receives credential(JWT) signed by google as the request body.
-It verifies credential(auth.authenticate), then creates a session cookie for that user(auth.login).
+The [restapi/views.py](google-oauth-01/backend/restapi/views.py) is the main place where we implement funtions the API provides. 
 
-ApiLogoutView clears the session cookie.
+ApiLoginView receives credential(JWT) signed by google as the request body.
+It verifies credential(auth.authenticate), then creates a session for that user([auth.login](https://github.com/django/django/blob/main/django/contrib/auth/__init__.py#L94)).
+
+ApiLogoutView clears the session.
 
 ApiGetUserView returns user data as a response if the request have a valid session cookie set in the header.
 
@@ -242,9 +244,12 @@ class ApiGetUserView(APIView):
 
 ### restapi/backend/GIStoken.py
 
-The GIStoken.py provides authentication backend functions to verify the credential and create the user if it does not yet exist.
+The [GIStoken.py](google-oauth-01/backend/restapi/backend/GIStoken.py) provides authentication backend functions to verify the credential and create the user if it does not yet exist.
 
-The id_token.verify_oauth2_token function called form VerifyToken, is to verify token in the way that is suggested by [this](https://developers.google.com/identity/gsi/web/guides/verify-google-id-token).
+The id_token.verify_oauth2_token function called form VerifyToken, is to [verify token as follows](https://github.com/googleapis/google-auth-library-python/blob/main/google/auth/jwt.py#L215):
+* Verify the signature of the JWT with Google's certificate.
+* Verify aud: is the same as the client\_id we obtained from [Google APIs console](https://console.cloud.google.com/apis/credentials).
+* Verify "now" is in between the issue and the expiration date.
 
 ~~~
 import json
@@ -323,6 +328,8 @@ class UserSerializer(serializers.ModelSerializer):
 ~~~
 
 ### backend/settings.py
+
+Some parameters regarding authentication are defined here.
 
 ~~~
 AUTHENTICATION_BACKENDS = [

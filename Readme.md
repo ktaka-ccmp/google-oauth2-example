@@ -1,6 +1,6 @@
 # React.js + Django Rest framework + Sign in with Google
 
-The example apps provided in this repository consist of a React.js frontend and a backend API server using the Django REST framework(DRF).
+The example apps provided in this repository consist of a frontend and a backend API server using the React.js and the Django REST framework(DRF).
 OAuth services provided by major companies, including Google, have been widely used as authentication mechanisms for limiting access to certain pages.
 Since Google decided to [replace their OAuth service with the new one by March 31, 2023](https://developers.googleblog.com/2022/03/gis-jsweb-authz-migration.html),
 I somehow implemented OAuth to my React.js + DRF pages with a new Sign in with Google.
