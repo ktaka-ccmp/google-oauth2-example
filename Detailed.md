@@ -8,14 +8,7 @@ whereas [Google's client library](https://developers.google.com/identity/gsi/web
 ### AuthProvider.js
 
 Most of the authentication-related codes in the frontend React.js app are contained in [AuthProvider.js](google-oauth-01/frontend/src/AuthProvider.js).
-There are the following components and a context in this file:
-* AuthContext: a context to pass auth-related data between components.
-* AuthProvider: main functions related to authentication.
-* LogoutButton: a component to show the "Sign Out" button.
-* UserLogin: a component to show the "Sign with Google button" and "Google One Tap."
-* RequireAuth: a wrapper component redirecting an unauthenticated user to the login page.
-
-Here are some of the key features in AuthProvider.js.
+Here I explain some of the key features in the code.
 
 Create an axios instance, which always sends credential if it's available.
 The interceptor redirects to "/login" when data fetching from the API server fails with 403.
@@ -37,7 +30,7 @@ The interceptor redirects to "/login" when data fetching from the API server fai
 ~~~
 
 The backendAuth is a callback function that sends Google's auth credential to the login endpoint of the API server.
-We expect the backend server to verify the credential and set a session id as a cookie.
+We expect the backend server to verify the credential and set a session cookie.
 
 ~~~
     const backendAuth = (response) => {
@@ -59,7 +52,7 @@ We expect the backend server to verify the credential and set a session id as a 
 ~~~
 
 The getUser function tries to fetch user data from the API server.
-If there is a valid session in the cookie, we can obtain user data, meaning the user is authenticated.
+If we already have a valid session cookie, we can obtain user data, causing us to regard the user as authenticated.
 When the obtained user data is null, we can regard her as unauthenticated.
 
 ~~~
