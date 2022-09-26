@@ -17,14 +17,20 @@ export const AuthProvider = ({ children }) => {
 	withCredentials: true,
     });
 
-    apiAxios.interceptors.response.use(response => {return response}, error => {
-	if (error.response.status === 403) {
-	    console.log("apiAxios failed. Redirecting to /login... ")
-	    userRef.current = null;
-	    navigate('/login', {state: { from: location }}, {replace: true});
-	}
-	return Promise.reject(error);
-    });
+    useMemo(() => {
+	const resInterceptor = apiAxios.interceptors.response.use(
+	    response => {return response}, error => {
+		if (error.response.status === 403) {
+		    console.log("apiAxios failed. Redirecting to /login... ")
+		    userRef.current = null;
+		    navigate('/login', {state: { from: location }}, {replace: true});
+		}
+		return Promise.reject(error);
+	    });
+	return () => {
+	    apiAxios.interceptors.response.eject(resInterceptor);
+	};
+    },[])
 
     const getUser = () => {
 	setLoadUser(true);
