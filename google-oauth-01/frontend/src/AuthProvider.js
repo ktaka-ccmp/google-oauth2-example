@@ -64,8 +64,8 @@ export const AuthProvider = ({ children }) => {
 	userRef.current = null;
 	googleLogout();
 	apiAxios.get(`/api/logout/`)
+	    .then(res => navigate(location))
 	    .catch(error => console.log("Logout failed: ", error))
-	navigate(location);
     }
 
     const value = {

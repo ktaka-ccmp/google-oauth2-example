@@ -62,8 +62,8 @@ export const AuthProvider = ({ children }) => {
     const handleLogout = () => {
 	userRef.current = null;
 	apiAxios.get(`/api/logout/`)
+	    .then(res => navigate(location))
 	    .catch(error => console.log("Logout failed: ", error))
-	navigate(location);
     }
 
     const value = {
