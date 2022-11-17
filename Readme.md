@@ -23,9 +23,9 @@ The authentication follows the following steps:
 Here in this repository, I provide a simplified version of the code to illustrate the authentication mechanism.
 
 1. [noauth](noauth): React.js + DRF app without authentication.
-1. [google-oauth-01](google-oauth-01): React.js + DRF app with Sign in with Google, using "@react-oauth/google".
+1. [google-oauth/frontend-01](google-oauth/frontend-01): React.js app with Sign in with Google, using "@react-oauth/google".
    - https://www.npmjs.com/package/@react-oauth/google
-1. [google-oauth-02](google-oauth-02): React.js + DRF app with Sign in with Google, using Google's client library.
+1. [google-oauth/frontend-02](google-oauth/frontend-02): React.js app with Sign in with Google, using Google's client library.
    - https://youtu.be/roxC8SMs7HU
    - https://developers.google.com/identity/gsi/web/guides/client-library
 
