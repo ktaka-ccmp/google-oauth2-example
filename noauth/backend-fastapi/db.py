@@ -25,8 +25,16 @@ class Customer(Base):
 from pydantic import BaseModel
 
 class CustomerBase(BaseModel):
+    id: int
     name: str
     email: str
+    class Config:
+        orm_mode = True
 
 Base.metadata.create_all(bind=engine)
 
+from typing import List, Union
+
+class CustomerList(BaseModel):
+    description: Union[str, None] = None
+    results: Union[List[CustomerBase], None] = None
