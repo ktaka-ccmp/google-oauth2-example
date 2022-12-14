@@ -1,44 +1,8 @@
-# React.js + Django Rest Framework without authentication
+# React.js + Django Rest Framework/fastapi without authentication
 
 ## Howto run app in this repository.
 
-### Django (backend)
-
-Prepare python venv and install packages
-~~~
-cd backend/
-python3 -m venv .venv
-source .venv/bin/activate
-pip install django djangorestframework django-cors-headers coreapi python-decouple
-~~~
-
-Edit .env in the directory where manage.py exists.
-~~~
-ORIGIN_SERVER=http://localhost:3000
-~~~
-
-Run server
-~~~
-./manage.py runserver [::]:8000
-~~~
-
-(Optional) Test to see if it's working
-~~~
-# curl -s  http://localhost:8000/api/customer/| jq .results[1]
-{
-  "id": 2,
-  "enjoy_jards_macale": true,
-  "name": "UYcSutJqGjGxXtutiahlRqoALIkSYD",
-  "email": "QhNkQJLCam@example.com",
-  "age": -1653201221,
-  "bio": "vjHxWOqXSzudaCKLsNLHTetbRGKmZqaHwMdIMKgfisgkYvUBZsYFnJJXfRoWlkbEaSNWRUENyVXDiYaeGtxyOyUsDtpNoRvNGgzBSVWknAcfnCuTMqmvNRpwKahIQhYIlZJnHWSswjIPNiroLAbICBKCwYmwdSaMEwBrTsrrkjHLmRZMacaJcpkDoFvFNOFGeCfGjrHaKqVSxhgxattUkjlvkFjfOUZqjXGGIROPnViSwSZWGONybXdqnvPeOlhlwiktOQwytarzxcNlFCIwVfrYJqUPjdIxJKxRTsRRgNuF",
-  "days_since_last_login": -9134197483796524000,
-  "birthday": "2022-09-17",
-  "last_shopping": "2022-09-18T07:27:16.971715+09:00"
-}
-~~~
-
-### React (frontend)
+### Frontend React.js app
 
 If not yet installed, install node.js. (Here is an example for Debian.)
 ~~~
@@ -61,6 +25,52 @@ Run server
 ~~~
 PORT=3000 npm start 
 ~~~
+
+### The backend api servers
+
+#### Django Rest Framework
+
+Prepare python venv and install packages
+~~~
+cd backend-django/
+python3 -m venv .venv
+source .venv/bin/activate
+pip install django djangorestframework django-cors-headers coreapi python-decouple
+~~~
+
+Edit .env in the directory where manage.py exists.
+~~~
+ORIGIN_SERVER=http://localhost:3000
+~~~
+
+Run server
+~~~
+./manage.py runserver [::]:8000
+~~~
+
+#### fastapi
+
+Prepare python venv and install packages
+~~~
+cd backend-fastapi/
+python3 -m venv .venv
+source .venv/bin/activate
+pip install fastapi sqlalchemy uvicorn
+~~~
+
+Create database
+~~~
+rm test.db
+python3 db.py
+./create_data.sh
+echo "select * from customer"  | sqlite3 test.db
+~~~
+
+Run server
+~~~
+uvicorn main:app  --host 0.0.0.0 --reload
+~~~
+
 
 # How this repo was created.
 
