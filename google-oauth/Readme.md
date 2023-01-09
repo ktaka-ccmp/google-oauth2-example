@@ -108,5 +108,21 @@ Here in this repository, I implemented two types of React.js frontend app with S
    - https://youtu.be/roxC8SMs7HU
    - https://developers.google.com/identity/gsi/web/guides/client-library
 
-To test the frontend-02, please go into the directory frontend-02, then follow [the step above](#frontend).
+To test the frontend-02, please go into the directory frontend-02, then follow the step below:
 
+Module install
+~~~
+cd frontend-02
+npm install axios react-router-dom reactstrap bootstrap
+~~~
+
+Edit .env in the directory where package.json exists.
+~~~
+REACT_APP_API_SERVER=http://localhost:8000
+REACT_APP_GOOGLE_OAUTH2_CLIENT_ID=888888888888-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx.apps.googleusercontent.com
+~~~
+
+Run server
+~~~
+PORT=3000 npm start 
+~~~
