@@ -1,8 +1,6 @@
-# No authentication
+# Howto run app in this repository.
 
-## Howto run app in this repository.
-
-## React.js + Django Rest Framework
+## 1. React.js + Django Rest Framework
 ### <a name="frontend">Frontend React.js app</a>
 
 If not yet installed, install node.js. (Here is an example for Debian.)
@@ -47,7 +45,7 @@ Run server
 ./manage.py runserver [::]:8000
 ~~~
 
-## React.js + fastapi
+## 2. React.js + fastapi
 
 ### Frontend React.js app
 
