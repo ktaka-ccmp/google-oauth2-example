@@ -51,7 +51,7 @@ Run server
 
 ### Frontend React.js app
 
-Same as the above(#frontend).
+Same as [the above](#frontend).
 
 ### The backend api server(fastapi)
 
