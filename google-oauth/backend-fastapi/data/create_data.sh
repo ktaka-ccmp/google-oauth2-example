@@ -1,6 +1,6 @@
 #!/bin/bash
 
-DB=data.db
+DB=data/data.db
 
 for i in {001..200} ; do
 echo "insert into customer(name,email) values('a$i','a$i@example.com')"  \
@@ -19,4 +19,4 @@ done
 echo "select * from customer" | sqlite3 $DB
 echo "select * from user" | sqlite3 $DB
 
-echo "select * from sessions" | sqlite3 cache.db 
+echo "select * from sessions" | sqlite3 data/cache.db
