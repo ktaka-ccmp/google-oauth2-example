@@ -1,12 +1,8 @@
-# Authentication using Sign in with Google
+# Howto run app in this repository.
 
-The content of this page describes how to test apps in this repository using Sign in with Google.
-Extra steps are needed when we run apps on servers other than localhost.
-It seems using HTTPS is mandatory for servers other than localhost.
+## 1. React.js + Django Rest Framework
 
-## How to test apps on localhost
-
-### Setup OAuth configuration on Google APIs console
+### <a name="googleapisetup">Setup OAuth configuration on Google APIs console</a>
 
 Open https://console.cloud.google.com/apis/credentials, then go to Credentials -> OAuth 2.0 Client IDs, then add both of the following to the Authorized JavaScript origins box.
 
@@ -17,11 +13,36 @@ http://localhost:3000
 
 For details, see https://developers.google.com/identity/gsi/web/guides/get-google-api-clientid.
 
-### Django (backend)
+### <a name="frontend">Frontend React.js app</a>
 
-Prepare venv and install packages
+If not yet installed, install node.js. (Here is an example for Debian.)
 ~~~
-cd backend/
+curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
+sudo apt-get install -y nodejs
+~~~
+
+Module install
+~~~
+cd frontend-01
+npm install axios react-router-dom reactstrap bootstrap @react-oauth/google
+~~~
+
+Edit .env in the directory where package.json exists.
+~~~
+REACT_APP_API_SERVER=http://localhost:8000
+REACT_APP_GOOGLE_OAUTH2_CLIENT_ID=888888888888-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx.apps.googleusercontent.com
+~~~
+
+Run server
+~~~
+PORT=3000 npm start 
+~~~
+
+### The backend api server(Django Rest Framework)
+
+Prepare python venv and install packages
+~~~
+cd backend-django/
 python3 -m venv .venv
 source .venv/bin/activate
 pip install django djangorestframework django-cors-headers coreapi python-decouple google-auth
@@ -38,91 +59,50 @@ Run server
 ./manage.py runserver [::]:8000
 ~~~
 
-### React (frontend)
+## 2. React.js + fastapi
 
-Install node.js (Here is an example for Debian.)
+### Frontend React.js app
+
+Same as [the above](#frontend).
+
+### The backend api server(fastapi)
+
+Prepare python venv and install packages
 ~~~
-curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
-sudo apt-get install -y nodejs
+cd backend-fastapi/
+python3 -m venv .venv
+source .venv/bin/activate
+pip install fastapi sqlalchemy uvicorn google-auth requests python-dotenv python-multipart
 ~~~
 
-Module install
+Create database
 ~~~
-cd frontend
-npm install axios react-router-dom reactstrap bootstrap @react-oauth/google
+rm test.db
+python3 db.py
+./create_data.sh
+echo "select * from customer"  | sqlite3 test.db
 ~~~
 
-Edit .env in the directory where package.json exists.
+Edit .env in the directory where main.py exists.
 ~~~
-REACT_APP_API_SERVER=http://localhost:8000
-REACT_APP_GOOGLE_OAUTH2_CLIENT_ID=888888888888-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx.apps.googleusercontent.com
+ORIGIN_SERVER=http://localhost:3000
+GOOGLE_OAUTH2_CLIENT_ID=888888888888-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx.apps.googleusercontent.com
 ~~~
 
 Run server
 ~~~
-PORT=3000 npm start 
+uvicorn main:app  --host 0.0.0.0 --reload
 ~~~
 
-## Extra steps needed for servers other than localhost
+## 3. An alternative React.js app
 
-When we use "Sign in with Google" on servers other than localhost, it seems we must use HTTPS.
-See https://stackoverflow.com/a/70241409.
+Here in this repository, I implemented two types of React.js frontend app with Sign in with Google.
 
-Suppose we want to run apps. in this repository on the following servers.
-~~~
-backend: api.example.net:8000
-frontend: web.example.net:3000
-~~~
+1. [frontend-01](frontend-01): React.js frontend app with Sign in with Google, using "@react-oauth/google".
+   - https://www.npmjs.com/package/@react-oauth/google
+1. [frontend-02](frontend-02): React.js frontend app with Sign in with Google, using Google's client library.
+   - https://youtu.be/roxC8SMs7HU
+   - https://developers.google.com/identity/gsi/web/guides/client-library
 
-### Setup OAuth configuration on Google APIs console
+To test the frontend-02, please go into the directory frontend-02, then follow [the step above](#forntend).
 
-Open https://console.cloud.google.com/apis/credentials, go to OAuth 2.0 Client IDs, then add both of the following to the Authorized JavaScript origins box.
-
-~~~
-https://web.example.com
-https://web.example.com:3000
-~~~
-
-For details, see https://developers.google.com/identity/gsi/web/guides/get-google-api-clientid.
-
-### SSL Certificates are needed
-
-Obtain certificate, for example from https://letsencrypt.org/getting-started/.
-
-Place them somewhere on your server.
-~~~
-${SOMEWHERE}/CERT/
-├── fullchain.pem
-└── privkey.pem
-~~~
-
-### Django (backend)
-
-Install extra packages.
-~~~
-pip install uvicorn gunicorn
-~~~
-
-Edit .env in the directory where manage.py exists.
-~~~
-ORIGIN_SERVER=https://web.example.com:3000
-GOOGLE_OAUTH2_CLIENT_ID=888888888888-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx.apps.googleusercontent.com
-~~~
-
-Run server in the directory where manage.py exists.
-~~~
-gunicorn backend.asgi:application -k uvicorn.workers.UvicornWorker -b [::]:8000 -w 2 --keyfile ${SOMEWHERE}/CERT/privkey.pem --certfile ${SOMEWHERE}/CERT/fullchain.pem
-~~~
-
-### React (frontend)
-
-Edit .env in the directory where package.json exists.
-~~~
-ORIGIN_SERVER=https://api.example.com:8000
-GOOGLE_OAUTH2_CLIENT_ID=888888888888-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx.apps.googleusercontent.com
-~~~
-
-Run server in the directory where package.json exists.
-~~~
-HTTPS=true SSL_CRT_FILE=${SOMEWHERE}/CERT/fullchain.pem SSL_KEY_FILE=${SOMEWHERE}/CERT/privkey.pem PORT=3000 npm start
-~~~
