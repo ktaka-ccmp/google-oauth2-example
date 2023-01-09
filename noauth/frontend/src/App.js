@@ -3,7 +3,7 @@ import Customer from './Customer';
 import { Table, Container } from 'reactstrap';
 
 const NoMatch = () => {
-    return <h2>Page doesn't exist.</h2>;
+    return <h2>Page does not exist.</h2>;
 }
 
 const Top = () => {
