@@ -80,10 +80,11 @@ pip install fastapi sqlalchemy uvicorn google-auth requests python-dotenv python
 
 Create database
 ~~~
-rm test.db
-python3 db.py
-./create_data.sh
-echo "select * from customer"  | sqlite3 test.db
+rm data/data.db data/cache.db
+python3 data/db.py
+./data/create_data.sh
+echo "select * from customer"  | sqlite3 data/data.db
+echo "select * from sessions"  | sqlite3 data/cache.db
 ~~~
 
 Edit .env in the directory where main.py exists.
