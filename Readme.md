@@ -13,7 +13,7 @@ noauth/
 └── frontend
 ```
 
-The [google-oauth](google-oauth) [noauth](noauth) directory contains example apps for React.js+DRF and React.js+fastapi using Google OAuth as the authentication mechanism.
+The [google-oauth](google-oauth) directory contains example apps for React.js+DRF and React.js+fastapi using Google OAuth as the authentication mechanism.
 
 ```
 google-oauth/
@@ -23,9 +23,7 @@ google-oauth/
 └── frontend-02
 ```
 
-As for maintaining sessions, many examples on the Internet are using JWT access tokens themselves, which are provided by Google or the backend API server.
-However, there are arguments that [JWT tokens should not be used for sessions](http://cryto.net/~joepie91/blog/2016/06/13/stop-using-jwt-for-sessions/).
-Therefore I implemented the backend API servers so that they set session cookies after [verification of id token](https://developers.google.com/identity/gsi/web/guides/verify-google-id-token) provided by Google.
+As for maintaining sessions, I implemented the backend API servers so that they set session cookies after [verification of id token](https://developers.google.com/identity/gsi/web/guides/verify-google-id-token) provided by Google.
 
 The authentication follows the following steps:
 
@@ -38,8 +36,6 @@ The authentication follows the following steps:
 1. React.js app regards the user as authenticated and sets a property to always send a request with the session cookie in the following API communications.
 1. The backend API servers allow what is allowed for the user as long as the session is valid.
 
-Here in this repository, I provide a simplified version of the code to illustrate the authentication mechanism.
-
 ## How the app works without authentication
 
 The app in this repository consists of two pages, "Top" and "Customer."
@@ -48,7 +44,7 @@ The app in this repository consists of two pages, "Top" and "Customer."
 
 ![Customer no-auth](./images/NoauthCustomer.png "Customer page - no auth")
 
-The Customer page, which fetches the data from the API server, is sensitive. Therefore the page must not be seen by unauthenticated users, and the API server must not provide requested data.
+The Customer page, which fetches the data from the API server, is not restricted. Therefore the page can be seen by unauthenticated users.
 
 ##  How the app works with authentication
 
@@ -60,5 +56,5 @@ The Customer page can only be seen after successful authentication.
 
 ![Customer page for authenticated users](./images/AuthCustomer.png "Customer page for authenticated users")
 
-Please note that the authentication mechanism protects both the Customer page and data fetch from the API server.
+Please note that the authentication mechanism protects the Customer page and prevents the React.js frontend app from fetching the data from the API server.
 
