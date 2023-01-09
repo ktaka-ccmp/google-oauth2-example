@@ -245,10 +245,14 @@ class ApiGetUserView(APIView):
 
 The [GIStoken.py](backend-django/restapi/backend/GIStoken.py) provides authentication backend functions to verify the credential and create the user if it does not yet exist.
 
-The id_token.verify_oauth2_token function called form VerifyToken, is to [verify token as follows](https://github.com/googleapis/google-auth-library-python/blob/main/google/auth/jwt.py#L215):
+The id_token.verify_oauth2_token function called form VerifyToken, is to verify token as follows:
 * Verify the signature of the JWT with Google's certificate.
 * Verify aud: is the same as the client\_id we obtained from [Google APIs console](https://console.cloud.google.com/apis/credentials).
 * Verify "now" is in between the issue and the expiration date.
+
+See also:
+* https://github.com/googleapis/google-auth-library-python/blob/main/google/oauth2/id_token.py
+* https://github.com/googleapis/google-auth-library-python/blob/main/google/auth/jwt.py (the decode function)
 
 ~~~
 import json
