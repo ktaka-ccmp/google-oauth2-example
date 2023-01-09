@@ -1,4 +1,4 @@
-# Example implementations of Sign in with Google using React.js frontend and Django/fastapi backend
+# Sign in with Google Example using React.js + Django and React.js + fastapi
 
 This repository provides example app implementations using Google OAuth as the authentication mechanism.
 The frontend app is implemented using React.js. 
