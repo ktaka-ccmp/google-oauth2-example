@@ -1,13 +1,13 @@
 # A detailed explanation of authentication-related codes
 
-The ["@react-oauth/google" library](https://github.com/MomenSherif/react-oauth) is used for google-oauth-01/frontend,
-whereas [Google's client library](https://developers.google.com/identity/gsi/web/guides/client-library) is used for google-oauth-02/frontend.
+The ["@react-oauth/google" library](https://github.com/MomenSherif/react-oauth) is used for frontend-01,
+whereas [Google's client library](https://developers.google.com/identity/gsi/web/guides/client-library) is used for frontend-02.
 
 ## 1. frontend-01
 
 ### AuthProvider.js
 
-Most of the authentication-related codes in the frontend React.js app are contained in [AuthProvider.js](google-oauth/frontend-01/src/AuthProvider.js).
+Most of the authentication-related codes in the frontend React.js app are contained in [AuthProvider.js](frontend-01/src/AuthProvider.js).
 Here I explain some of the key features in the code.
 
 The UserLogin component is to show the "Sign in with Google button" and the "Google One Tap."
@@ -113,7 +113,7 @@ export const RequireAuth = ({ children }) => {
 
 ### App.js
 
-The authentication mechanisms in AuthProvider.js are made effective in [App.js](google-oauth/frontend-01/src/App.js) by wrapping components using `<GoogleOAuthProvider>`, `<AuthProvider>` and `<Route element={<RequireAuth />}>`.
+The authentication mechanisms in AuthProvider.js are made effective in [App.js](frontend-01/src/App.js) by wrapping components using `<GoogleOAuthProvider>`, `<AuthProvider>` and `<Route element={<RequireAuth />}>`.
 
 ~~~
 const App = () => {
@@ -147,11 +147,11 @@ const App = () => {
 
 ## 2. frontend-02
 
-The only significant difference from frontend #1 is the UserLogin component in [AuthProvider.js](google-oauth/frontend-02/src/AuthProvider.js), which is implemented using [Google's client library](https://developers.google.com/identity/gsi/web/guides/client-library).
+The only significant difference from frontend #1 is the UserLogin component in [AuthProvider.js](frontend-02/src/AuthProvider.js), which is implemented using [Google's client library](https://developers.google.com/identity/gsi/web/guides/client-library).
 
 ### public/index.html
 
-First, we need to load the library in [public/index.html](google-oauth/frontend-02/public/index.html).
+First, we need to load the library in [public/index.html](frontend-02/public/index.html).
 At the end of `<head></head>` section, we include the client script provided by Google.
 
 ~~~
@@ -201,7 +201,7 @@ The functionality required by the Django backends are the flowings:
 
 ### restapi/views.py
 
-The [restapi/views.py](google-oauth-01/backend/restapi/views.py) is the main place where we implement funtions the API provides. 
+The [restapi/views.py](backend-django/restapi/views.py) is the main place where we implement funtions the API provides. 
 
 ApiLoginView receives credential(JWT) signed by google as the request body.
 It verifies credential(auth.authenticate), then creates a session for that user([auth.login](https://github.com/django/django/blob/main/django/contrib/auth/__init__.py#L94)).
@@ -243,7 +243,7 @@ class ApiGetUserView(APIView):
 
 ### restapi/backend/GIStoken.py
 
-The [GIStoken.py](google-oauth/backend-django/restapi/backend/GIStoken.py) provides authentication backend functions to verify the credential and create the user if it does not yet exist.
+The [GIStoken.py](backend-django/restapi/backend/GIStoken.py) provides authentication backend functions to verify the credential and create the user if it does not yet exist.
 
 The id_token.verify_oauth2_token function called form VerifyToken, is to [verify token as follows](https://github.com/googleapis/google-auth-library-python/blob/main/google/auth/jwt.py#L215):
 * Verify the signature of the JWT with Google's certificate.
