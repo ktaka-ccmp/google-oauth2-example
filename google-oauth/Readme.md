@@ -1,10 +1,11 @@
 # Howto run app in this repository.
 
-## 1. React.js + Django Rest Framework
+## 0. <a name="googleapisetup">Setup OAuth configuration on Google APIs console</a>
 
-### <a name="googleapisetup">Setup OAuth configuration on Google APIs console</a>
-
-Open https://console.cloud.google.com/apis/credentials, then go to Credentials -> OAuth 2.0 Client IDs, then add both of the following to the Authorized JavaScript origins box.
+1. Open https://console.cloud.google.com/apis/credentials.
+1. Go CREATE CREDENTIALS -> Go Create OAuth client ID -> Choose "Web applicatin" as Application type -> create.
+1. Save the client ID somewhere, as it is needed later. 
+1. Go one of the OAuth 2.0 Client IDs just created, then add both of the following to the Authorized JavaScript origins box.
 
 ~~~
 http://localhost
@@ -12,6 +13,8 @@ http://localhost:3000
 ~~~
 
 For details, see https://developers.google.com/identity/gsi/web/guides/get-google-api-clientid.
+
+## 1. React.js + Django Rest Framework
 
 ### <a name="frontend">Frontend React.js app</a>
 
@@ -104,5 +107,5 @@ Here in this repository, I implemented two types of React.js frontend app with S
    - https://youtu.be/roxC8SMs7HU
    - https://developers.google.com/identity/gsi/web/guides/client-library
 
-To test the frontend-02, please go into the directory frontend-02, then follow [the step above](#forntend).
+To test the frontend-02, please go into the directory frontend-02, then follow [the step above](#frontend).
 
