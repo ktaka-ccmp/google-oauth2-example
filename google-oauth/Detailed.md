@@ -3,7 +3,7 @@
 The ["@react-oauth/google" library](https://github.com/MomenSherif/react-oauth) is used for google-oauth-01/frontend,
 whereas [Google's client library](https://developers.google.com/identity/gsi/web/guides/client-library) is used for google-oauth-02/frontend.
 
-## frontend #1 (google-oauth-01/frontend)
+## 1. frontend-01
 
 ### AuthProvider.js
 
@@ -145,7 +145,7 @@ const App = () => {
 }
 ~~~
 
-## frontend #2 (google-oauth-02/frontend)
+## 2. frontend-02
 
 The only significant difference from frontend #1 is the UserLogin component in [AuthProvider.js](google-oauth-02/frontend/src/AuthProvider.js), which is implemented using [Google's client library](https://developers.google.com/identity/gsi/web/guides/client-library).
 
@@ -192,7 +192,7 @@ export const UserLogin = () => {
 };
 ~~~
 
-## backend
+## 3. backend-django
 
 The functionality required by the Django backends are the flowings:
 * [Verify credential.](https://developers.google.com/identity/gsi/web/guides/verify-google-id-token)
