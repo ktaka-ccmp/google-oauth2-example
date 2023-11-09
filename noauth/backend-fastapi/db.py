@@ -33,8 +33,3 @@ class CustomerBase(BaseModel):
 
 Base.metadata.create_all(bind=engine)
 
-from typing import List, Union
-
-class CustomerList(BaseModel):
-    description: Union[str, None] = None
-    results: Union[List[CustomerBase], None] = None

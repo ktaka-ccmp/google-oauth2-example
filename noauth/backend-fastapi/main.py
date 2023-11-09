@@ -1,13 +1,13 @@
 from fastapi import Depends, FastAPI
 from sqlalchemy.orm import Session
-from db import Customer, CustomerBase, SessionLocal, CustomerList
+from db import Customer, CustomerBase, SessionLocal
 from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
 
 origins = [
     "http://localhost:3000",
-    "http://v200.h.ccmp.jp:4000",
+    "http://10.0.0.201:3000",
     ]
 
 app.add_middleware(
@@ -31,7 +31,7 @@ def get_db():
 @app.get("/api/customer/")
 def read_customers(db: Session = Depends(get_db)):
     q = db.query(Customer).offset(0).limit(100).all()
-    result = CustomerList(description="hello", results=q)
+    result = { "description" : "hello", "results" : q}
     return result
 
 @app.get("/customer/{customer_id}")
