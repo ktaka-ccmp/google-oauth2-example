@@ -77,8 +77,3 @@ def get_cache():
     finally:
         cs.close()
 
-from typing import List, Union
-
-class CustomerList(BaseModel):
-    description: Union[str, None] = None
-    results: Union[List[CustomerBase], None] = None
