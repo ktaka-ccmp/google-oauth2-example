@@ -75,7 +75,7 @@ Prepare python venv and install packages
 cd backend-fastapi/
 python3 -m venv .venv
 source .venv/bin/activate
-pip install fastapi sqlalchemy uvicorn google-auth requests python-dotenv python-multipart
+pip install fastapi sqlalchemy uvicorn google-auth requests python-dotenv python-multipart pydantic-settings
 ~~~
 
 Create database
