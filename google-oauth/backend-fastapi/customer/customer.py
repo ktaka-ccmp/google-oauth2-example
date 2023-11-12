@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
-from data.db import Customer, CustomerBase, CustomerList
+from data.db import Customer, CustomerBase
 
 from auth.auth import get_db, get_current_active_user
 
@@ -12,7 +12,7 @@ def get_customer(db_session: Session, customer_id: int):
 @router.get("/customer/", dependencies=[Depends(get_current_active_user),])
 def read_customers(db: Session = Depends(get_db)):
     q = db.query(Customer).offset(0).limit(100).all()
-    result = CustomerList(description="hello", results=q)
+    result = { "description" : "hello", "results" : q}
     return result
 
 @router.get("/customer/{customer_id}")
