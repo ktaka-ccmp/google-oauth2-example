@@ -18,10 +18,12 @@ export const AuthProvider = ({ children }) => {
     });
 
     apiAxios.interceptors.response.use(response => {return response}, error => {
-	if (error.response.status === 403) {
+	if (error.response.status === 401 || error.response.status === 403) {
 	    console.log("apiAxios failed. Redirecting to /login... ")
 	    userRef.current = null;
-	    navigate('/login', {state: { from: location }}, {replace: true});
+		if (location.pathname!=="/login"){
+			navigate('/login', {state: { from: location }}, {replace: true});
+		}
 	}
 	return Promise.reject(error);
     });
