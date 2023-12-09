@@ -97,9 +97,9 @@ async def get_current_user(ds: Session = Depends(get_db), cs: Session = Depends(
 
 async def get_current_active_user(current_user: User = Depends(get_current_user)):
     if not current_user:
-        return None
+        raise HTTPException(status_code=401, detail="NotAuthenticated")
     if current_user.disabled:
-        raise HTTPException(status_code=400, detail="Inactive user")
+        raise HTTPException(status_code=403, detail="Inactive user")
     return current_user
 
 @router.post("/login")
