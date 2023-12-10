@@ -5,19 +5,20 @@
   import { useLocation, navigate } from "svelte-routing";
 
   let location = useLocation();
+  // let origin = "";
   let origin = $location.state?.from;
-  $: console.log("Original location1", $location.state?.from);
-  $: console.log("Original location2", origin);
+  // $: console.log("Current:", $location.state?.from);
+  // $: console.log("Origin:", origin);
 
   const backendAuth = (response) => {
     const data = JSON.stringify(response, null, 2);
-    console.log("response\n", JSON.stringify(response, null, 2));
+    console.log("JWT fed to backendAuth:\n", data);
 
     apiAxios
       .post(`/api/login/`, data)
       .then((res) => {
-        console.log("Backend Auth: ", res);
-        console.log("Navigate Back to: ", origin);
+        console.log("BackendAuth response:\n", res);
+        console.log("Navigate back to: ", origin);
         navigate(origin, { replace: true });
       })
       .catch((error) => {

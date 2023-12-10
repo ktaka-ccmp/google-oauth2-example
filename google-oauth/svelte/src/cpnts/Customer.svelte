@@ -3,23 +3,13 @@
   import { apiAxios } from "../lib/apiAxios";
   import UserLogout from "./UserLogout.svelte";
 
-  let users = [];
-
-  const getUser = () => {
-    apiAxios
-      .get(`/api/user/`)
-      .then((res) => {
-        user = res.data;
-        console.log("getUser: user:", user);
-      })
-      .catch((error) => console.log("getUser faild: ", error.response));
-  };
+  let customers = [];
 
   const getCustomers = async () => {
     await apiAxios
       .get(`/api/customer/`)
       .then((res) => {
-        users = res.data.results;
+        customers = res.data.results;
       })
       .catch((error) => {
         console.log(error);
@@ -34,9 +24,9 @@
 <UserLogout />
 <h2>This is Customer.</h2>
 
-{#await users}
+{#await customers}
   <p>Loading ...</p>
-{:then users}
+{:then customers}
   <div class="table-responsive">
     <table class="table table-bordered table-hover table-striped">
       <thead class="table-light">
@@ -47,7 +37,7 @@
         </tr>
       </thead>
       <tbody>
-        {#each users as cs}
+        {#each customers as cs}
           <tr>
             <td>{cs.id}</td>
             <td>{cs.name}</td>

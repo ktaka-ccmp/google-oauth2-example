@@ -1,6 +1,5 @@
 <script>
   import { onMount } from "svelte";
-  import { navigate } from "svelte-routing";
   import { apiAxios } from "../lib/apiAxios.js";
 
   let user;
