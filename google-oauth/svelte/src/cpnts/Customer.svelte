@@ -1,43 +1,60 @@
 <script>
-    import { onMount } from "svelte";
-    import axios from "axios";
+  import { onMount } from "svelte";
+  import { apiAxios } from "../lib/apiAxios";
+  import UserLogout from "./UserLogout.svelte";
 
-    let users = [];
-    
-    console.log(import.meta.env.VITE_APP_API_SERVER)
+  let users = [];
 
-    onMount(async () => {
-    const res = await axios.get(`${import.meta.env.VITE_APP_API_SERVER}/api/customer/`);
-    users = res.data.results;
-    console.log("axios:", users);
-    });
+  const getUser = () => {
+    apiAxios
+      .get(`/api/user/`)
+      .then((res) => {
+        user = res.data;
+        console.log("getUser: user:", user);
+      })
+      .catch((error) => console.log("getUser faild: ", error.response));
+  };
 
+  const getCustomers = async () => {
+    await apiAxios
+      .get(`/api/customer/`)
+      .then((res) => {
+        users = res.data.results;
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  onMount(async () => {
+    getCustomers();
+  });
 </script>
 
-
+<UserLogout />
 <h2>This is Customer.</h2>
 
 {#await users}
-<p>Loading ...</p>
+  <p>Loading ...</p>
 {:then users}
-<div class="table-responsive">
+  <div class="table-responsive">
     <table class="table table-bordered table-hover table-striped">
-        <thead class="table-light">
-            <tr>
-                <th>id</th>
-                <th>name</th>
-                <th>email</th>
-            </tr>
-            </thead>
-            <tbody>
-                {#each users as cs}
-                <tr>
-                    <td>{cs.id}</td>
-                    <td>{cs.name}</td>
-                    <td>{cs.email}</td>
-                </tr>
-                {/each}
-            </tbody>
+      <thead class="table-light">
+        <tr>
+          <th>id</th>
+          <th>name</th>
+          <th>email</th>
+        </tr>
+      </thead>
+      <tbody>
+        {#each users as cs}
+          <tr>
+            <td>{cs.id}</td>
+            <td>{cs.name}</td>
+            <td>{cs.email}</td>
+          </tr>
+        {/each}
+      </tbody>
     </table>
-</div>
+  </div>
 {/await}
