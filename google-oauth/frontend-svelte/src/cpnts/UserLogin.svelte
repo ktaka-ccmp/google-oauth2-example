@@ -1,8 +1,8 @@
 <script>
   import { onMount } from "svelte";
   import { apiAxios } from "../lib/apiAxios";
-
   import { useLocation, navigate } from "svelte-routing";
+  import { jwtDecode } from "jwt-decode";
 
   let location = useLocation();
   // let origin = "";
@@ -13,6 +13,8 @@
   const backendAuth = (response) => {
     const data = JSON.stringify(response, null, 2);
     console.log("JWT fed to backendAuth:\n", data);
+    var jwt = jwtDecode(response.credential);
+    console.log("Decoded JWT:\n", jwt);
 
     apiAxios
       .post(`/api/login/`, data)
