@@ -1,6 +1,5 @@
-import { useState, useRef, useMemo, useContext, createContext } from 'react';
+import { useState, useRef, useMemo, useEffect, useContext, createContext } from 'react';
 import { Navigate, useNavigate, useLocation, Outlet } from 'react-router-dom';
-import { useGoogleOneTapLogin, GoogleLogin, googleLogout } from '@react-oauth/google';
 import axios from 'axios';
 
 export const AuthContext = createContext(null);
@@ -18,10 +17,12 @@ export const AuthProvider = ({ children }) => {
     });
 
     apiAxios.interceptors.response.use(response => {return response}, error => {
-	if (error.response.status === 403) {
+	if (error.response.status === 401 || error.response.status === 403) {
 	    console.log("apiAxios failed. Redirecting to /login... ")
 	    userRef.current = null;
-	    navigate('/login', {state: { from: location }}, {replace: true});
+		if (location.pathname!=="/login"){
+			navigate('/login', {state: { from: location }}, {replace: true});
+		}
 	}
 	return Promise.reject(error);
     });
@@ -62,7 +63,6 @@ export const AuthProvider = ({ children }) => {
 
     const handleLogout = () => {
 	userRef.current = null;
-	googleLogout();
 	apiAxios.get(`/api/logout/`)
 	    .then(res => navigate(location))
 	    .catch(error => console.log("Logout failed: ", error))
@@ -101,18 +101,26 @@ export const LogoutButton = () => {
 export const UserLogin = () => {
     const { onLogin } = useContext(AuthContext);
 
-    useGoogleOneTapLogin({
-	onSuccess: r => onLogin(r),
-	onError: () => { console.log('Google Login Failed') }
+    useEffect(() => {
+	google.accounts.id.initialize({
+	    /* global google */
+	    client_id: process.env.REACT_APP_GOOGLE_OAUTH2_CLIENT_ID,
+	    callback: r => onLogin(r),
+	    ux_mode: "popup",
+//	    ux_mode: "redirect",
+	});
+
+	google.accounts.id.renderButton(
+	    document.getElementById("signInDiv"),
+	    { theme: "filled_blue", size: "large", shape: "circle", }
+	);
+
+	google.accounts.id.prompt();
     });
 
     return (
 	<div className="App">
-	    <GoogleLogin
-		theme="filled_black" shape="pill"
-		onSuccess={onLogin}
-		onError={() => { console.log('Google Login Failed') }}
-	    />
+	    <div id="signInDiv"></div>
 	</div>
     );
 };
