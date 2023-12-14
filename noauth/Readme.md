@@ -1,31 +1,10 @@
 # Howto run app in this repository.
 
-## 1. React.js + Django Rest Framework
-### <a name="frontend">Frontend React.js app</a>
+## 1. Backend Rest API server
 
-If not yet installed, install node.js. (Here is an example for Debian.)
-~~~
-curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
-sudo apt-get install -y nodejs
-~~~
+Set up API server either with Django or FastAPI.
 
-Module install
-~~~
-cd frontend
-npm install axios react-router-dom reactstrap bootstrap
-~~~
-
-Edit .env in the directory where package.json exists.
-~~~
-REACT_APP_API_SERVER=http://localhost:8000
-~~~
-
-Run server
-~~~
-PORT=3000 npm start 
-~~~
-
-### The backend api server(Django Rest Framework)
+### 1.1. Django Rest Framework
 
 Prepare python venv and install packages
 ~~~
@@ -45,13 +24,7 @@ Run server
 ./manage.py runserver [::]:8000
 ~~~
 
-## 2. React.js + fastapi
-
-### Frontend React.js app
-
-Same as [the above](#frontend).
-
-### The backend api server(fastapi)
+### 1.2. FastAPI
 
 Prepare python venv and install packages
 ~~~
@@ -72,4 +45,50 @@ echo "select * from customer"  | sqlite3 test.db
 Run server
 ~~~
 uvicorn main:app  --host 0.0.0.0 --reload
+~~~
+
+## 2. Frontend apps
+
+Set up frontend either with React.js or Svelte.
+
+If not yet installed, install node.js. (Here is an example for Debian.)
+~~~
+curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
+sudo apt-get install -y nodejs
+~~~
+
+### 2.1. React.js
+
+Module install
+~~~
+cd frontend-react
+npm install axios react-router-dom reactstrap bootstrap
+~~~
+
+Edit .env in the directory where package.json exists.
+~~~
+REACT_APP_API_SERVER=http://localhost:8000
+~~~
+
+Run server
+~~~
+PORT=3000 npm start 
+~~~
+
+### 2.2. Svelte
+
+Module install
+~~~
+cd frontend-react
+npm install axios svelte-routing svelte bootstrap
+~~~
+
+Edit .env in the directory where package.json exists.
+~~~
+VITE_APP_API_SERVER=http://localhost:8000
+~~~
+
+Run server
+~~~
+npm run dev -- --port=3000
 ~~~

@@ -4,23 +4,30 @@ This repository provides example app implementations using Google OAuth as the a
 The frontend app is implemented using React.js. 
 The backend API servers are implemented in two ways, one is using Django REST framework(DRF) and the other is using fastapi.
 
-The [noauth](noauth) directory contains example apps for React.js+DRF and React.js+fastapi without authentication.
+The [noauth](noauth) directory contains example apps without authentication.
 
 ```
 noauth/
+├── Howto.md
+├── Readme.md
 ├── backend-django
 ├── backend-fastapi
-└── frontend
+├── frontend-react
+└── frontend-svelte
 ```
 
-The [google-oauth](google-oauth) directory contains example apps for React.js+DRF and React.js+fastapi using Google OAuth as the authentication mechanism.
+The [google-oauth](google-oauth) directory contains example apps using Google OAuth as the authentication mechanism.
 
 ```
 google-oauth/
+├── Detailed.md
+├── Readme.md
+├── ReadmeSSL.md
 ├── backend-django
 ├── backend-fastapi
-├── frontend-01
-└── frontend-02
+├── frontend-react01
+├── frontend-react02
+└── frontend-svelte
 ```
 
 # Sessions
