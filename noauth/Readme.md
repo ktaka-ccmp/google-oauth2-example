@@ -62,7 +62,7 @@ sudo apt-get install -y nodejs
 Module install
 ~~~
 cd frontend-react
-npm install axios react-router-dom reactstrap bootstrap
+npm install axios react-router-dom reactstrap
 ~~~
 
 Edit .env in the directory where package.json exists.
@@ -79,7 +79,7 @@ PORT=3000 npm start
 
 Module install
 ~~~
-cd frontend-react
+cd frontend-svelte
 npm install axios svelte-routing svelte bootstrap
 ~~~
 
