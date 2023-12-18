@@ -3,9 +3,6 @@ from google.auth.transport import requests
 
 from config import settings
 
-from sqlalchemy.orm import Session
-from data.db import User
-
 async def VerifyToken(jwt: str):
     try:
         idinfo = id_token.verify_oauth2_token(
