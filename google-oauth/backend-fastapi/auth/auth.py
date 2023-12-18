@@ -1,4 +1,5 @@
 import secrets
+import json
 from typing import Optional
 from fastapi import Depends, APIRouter, HTTPException, status, Response, Request
 from fastapi.security import OAuth2PasswordRequestForm, OAuth2
@@ -105,7 +106,12 @@ async def get_current_active_user(current_user: User = Depends(get_current_user)
 @router.post("/login")
 async def login(request: Request, response: Response, ds: Session = Depends(get_db), cs: Session = Depends(get_cache)):
     body = await request.body()
-    user = await google.authenticate(body, ds)
+    jwt = json.loads(body)["credential"]
+    if jwt == None:
+        return  Response({"Error: No JWT found"})
+    print("JWT token: " + jwt)
+
+    user = await google.authenticate(jwt, ds)
     if user:
         user_dict = get_user_by_name(user.name, ds)
         if not user_dict:
