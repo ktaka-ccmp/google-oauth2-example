@@ -1,4 +1,5 @@
 import secrets
+import json
 from typing import Optional
 from fastapi import Depends, APIRouter, HTTPException, status, Response, Request
 from fastapi.security import OAuth2PasswordRequestForm, OAuth2
@@ -7,7 +8,8 @@ from sqlalchemy.orm import Session
 from data.db import User, UserBase, Sessions
 from data.db import get_db, get_cache
 from starlette.status import HTTP_401_UNAUTHORIZED, HTTP_403_FORBIDDEN
-from . import oauth2google as google
+from auth.oauth2google import VerifyToken
+from auth.user import CreateUser
 
 class OAuth2Cookie(OAuth2):
     def __init__(
@@ -105,7 +107,17 @@ async def get_current_active_user(current_user: User = Depends(get_current_user)
 @router.post("/login")
 async def login(request: Request, response: Response, ds: Session = Depends(get_db), cs: Session = Depends(get_cache)):
     body = await request.body()
-    user = await google.authenticate(body, ds)
+    jwt = json.loads(body)["credential"]
+    if jwt == None:
+        return  Response({"Error: No JWT found"})
+    print("JWT token: " + jwt)
+
+    idinfo = await VerifyToken(jwt)
+    if not idinfo:
+        return  Response({"Error: Failed to validate JWT token"})
+
+    user = await CreateUser(idinfo, ds)
+
     if user:
         user_dict = get_user_by_name(user.name, ds)
         if not user_dict:

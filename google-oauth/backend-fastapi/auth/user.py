@@ -45,3 +45,13 @@ def delete_user(name: str, db_session: Session = Depends(get_db)):
             db_session.delete(user)
             db_session.commit()
     return {"status": f"\'{name}\' has been deleted."}
+
+async def CreateUser(idinfo: str, db_session: Session):
+    user = None
+    email = idinfo['email']
+
+    user = get_user_by_email(db_session, email)
+    if not user:
+        db_user = User(name=email, email=email)
+        user = await create_user(db_user, db_session)
+    return user
