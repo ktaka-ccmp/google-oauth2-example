@@ -8,7 +8,8 @@ from sqlalchemy.orm import Session
 from data.db import User, UserBase, Sessions
 from data.db import get_db, get_cache
 from starlette.status import HTTP_401_UNAUTHORIZED, HTTP_403_FORBIDDEN
-from . import oauth2google as google
+from auth.oauth2google import VerifyToken
+from auth.user import CreateUser
 
 class OAuth2Cookie(OAuth2):
     def __init__(
@@ -111,7 +112,12 @@ async def login(request: Request, response: Response, ds: Session = Depends(get_
         return  Response({"Error: No JWT found"})
     print("JWT token: " + jwt)
 
-    user = await google.authenticate(jwt, ds)
+    idinfo = await VerifyToken(jwt)
+    if not idinfo:
+        return  Response({"Error: Failed to validate JWT token"})
+
+    user = await CreateUser(idinfo, ds)
+
     if user:
         user_dict = get_user_by_name(user.name, ds)
         if not user_dict:

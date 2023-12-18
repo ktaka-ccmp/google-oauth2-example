@@ -5,7 +5,6 @@ from config import settings
 
 from sqlalchemy.orm import Session
 from data.db import User
-from auth.user import get_user_by_email, create_user
 
 async def VerifyToken(jwt: str):
     try:
@@ -19,17 +18,3 @@ async def VerifyToken(jwt: str):
     print("idinfo: ", idinfo)
     return idinfo
 
-async def authenticate(jwt: str, db_session: Session):
-    idinfo = await VerifyToken(jwt)
-    if not idinfo:
-        return None
-    user = None
-    email = idinfo['email']
-
-    user = get_user_by_email(db_session, email)
-    if user:
-        return user
-    if not user:
-        db_user = User(name=email, email=email)
-        user = await create_user(db_user, db_session)
-        return user
