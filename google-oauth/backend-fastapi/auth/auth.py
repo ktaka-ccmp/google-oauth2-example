@@ -109,12 +109,12 @@ async def login(request: Request, response: Response, ds: Session = Depends(get_
     body = await request.body()
     jwt = json.loads(body)["credential"]
     if jwt == None:
-        return  Response({"Error: No JWT found"})
+        return  Response("Error: No JWT found")
     print("JWT token: " + jwt)
 
     idinfo = await VerifyToken(jwt)
     if not idinfo:
-        return  Response({"Error: Failed to validate JWT token"})
+        return  Response("Error: Failed to validate JWT token")
 
     user = await CreateUser(idinfo, ds)
 
@@ -132,7 +132,7 @@ async def login(request: Request, response: Response, ds: Session = Depends(get_
             expires=1800,
         )
     else:
-        return Response({"Error: Auth failed"})
+        return Response("Error: Auth failed")
     return {"Authenticated_as": user.name}
 
 @router.post("/signin")
