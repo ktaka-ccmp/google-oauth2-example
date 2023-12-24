@@ -1,41 +1,12 @@
 import secrets
 import json
-from typing import Optional
 from fastapi import Depends, APIRouter, HTTPException, status, Response, Request
-from fastapi.security import OAuth2PasswordRequestForm, OAuth2
-from fastapi.openapi.models import OAuthFlows as OAuthFlowsModel
+from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 from data.db import User, UserBase, Sessions
 from data.db import get_db, get_cache
-from starlette.status import HTTP_401_UNAUTHORIZED, HTTP_403_FORBIDDEN
 from auth.oauth2google import VerifyToken
-from auth.user import CreateUser
-
-class OAuth2Cookie(OAuth2):
-    def __init__(
-        self,
-        tokenUrl: str,
-        scheme_name: str = None,
-        scopes: dict = None,
-        auto_error: bool = True,
-    ):
-        if not scopes:
-            scopes = {}
-        flows = OAuthFlowsModel(password={"tokenUrl": tokenUrl, "scopes": scopes})
-        super().__init__(flows=flows, scheme_name=scheme_name, auto_error=auto_error)
-
-    async def __call__(self, request: Request) -> Optional[str]:
-        session_id: str = request.cookies.get("session_id")
-        if not session_id:
-            if self.auto_error:
-                raise HTTPException(
-                    status_code=HTTP_403_FORBIDDEN, detail="Not authenticated"
-                )
-            else:
-                return None
-        return session_id
-
-oauth2_scheme = OAuth2Cookie(tokenUrl="/api/signin", auto_error=False)
+from auth.user import create as GetOrCreateUser
 
 router = APIRouter()
 
@@ -71,17 +42,17 @@ def get_user_by_name(name: str, ds: Session):
     print("get_user_by_name -> user: ", user)
     return user
 
-# def fake_hash_password(password: str):
-#     return "fakehashed" + password
-
-async def get_current_user(ds: Session = Depends(get_db), cs: Session = Depends(get_cache), session_id: str = Depends(oauth2_scheme)):
-
+async def get_current_user(request: Request, ds: Session = Depends(get_db), cs: Session = Depends(get_cache)):
+    session_id = request.cookies.get("session_id")
     if not session_id:
         return None
 
     session = get_session_by_session_id(session_id, cs)
     if not session:
         return None
+
+    # print("Session_id: ", session_id)
+    # print("Session: ", session)
 
     username = session["name"]
     user_dict = get_user_by_name(username, ds)
@@ -116,7 +87,7 @@ async def login(request: Request, response: Response, ds: Session = Depends(get_
     if not idinfo:
         return  Response("Error: Failed to validate JWT token")
 
-    user = await CreateUser(idinfo, ds)
+    user = await GetOrCreateUser(idinfo, ds)
 
     if user:
         user_dict = get_user_by_name(user.name, ds)
@@ -135,25 +106,22 @@ async def login(request: Request, response: Response, ds: Session = Depends(get_
         return Response("Error: Auth failed")
     return {"Authenticated_as": user.name}
 
-@router.post("/signin")
-async def signin(response: Response, form_data: OAuth2PasswordRequestForm = Depends(), ds: Session = Depends(get_db), cs: Session = Depends(get_cache)):
-    user_dict = get_user_by_name(form_data.username, ds)
-    if not user_dict:
-        raise HTTPException(status_code=400, detail="Incorrect username or password")
-    user = UserBase(**user_dict)
-    # hashed_password = fake_hash_password(form_data.password)
-    # if not hashed_password == user.hashed_password:
-    #     raise HTTPException(status_code=400, detail="Incorrect username or password")
+# @router.post("/signin")
+# async def signin(response: Response, form_data: OAuth2PasswordRequestForm = Depends(), ds: Session = Depends(get_db), cs: Session = Depends(get_cache)):
+#     user_dict = get_user_by_name(form_data.username, ds)
+#     if not user_dict:
+#         raise HTTPException(status_code=400, detail="Incorrect username or password")
+#     user = UserBase(**user_dict)
 
-    session_id=create_session(user, cs)
-    response.set_cookie(
-                  key="session_id",
-                  value=session_id,
-                  httponly=True,
-                  max_age=1800,
-                  expires=1800,
-    )
-    return {"access_token": user.name, "token_type": "bearer"}
+#     session_id=create_session(user, cs)
+#     response.set_cookie(
+#                   key="session_id",
+#                   value=session_id,
+#                   httponly=True,
+#                   max_age=1800,
+#                   expires=1800,
+#     )
+#     return {"access_token": user.name, "token_type": "bearer"}
 
 @router.get("/logout")
 async def logout(response: Response, request: Request, cs: Session = Depends(get_cache)):

@@ -23,6 +23,12 @@ def read_user_by_name(name: str, db_session: Session = Depends(get_db)):
     user = get_user_by_name(db_session, name)
     return user
 
+async def create(idinfo: str, db_session: Session):
+    email = idinfo['email']
+    db_user = User(name=email, email=email)
+    user = await create_user(db_user, db_session)
+    return user
+
 @router.post("/user/")
 async def create_user(user: UserBase, db_session: Session = Depends(get_db)):
     db_user = get_user_by_email(db_session, user.email)
@@ -45,13 +51,3 @@ def delete_user(name: str, db_session: Session = Depends(get_db)):
             db_session.delete(user)
             db_session.commit()
     return {"status": f"\'{name}\' has been deleted."}
-
-async def CreateUser(idinfo: str, db_session: Session):
-    user = None
-    email = idinfo['email']
-
-    user = get_user_by_email(db_session, email)
-    if not user:
-        db_user = User(name=email, email=email)
-        user = await create_user(db_user, db_session)
-    return user

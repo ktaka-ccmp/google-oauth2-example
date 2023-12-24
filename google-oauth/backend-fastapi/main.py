@@ -1,7 +1,7 @@
 from fastapi import FastAPI, Depends
 from fastapi.middleware.cors import CORSMiddleware
 
-from auth import auth, user, oauth2google
+from auth import auth, user
 from customer import customer
 from config import settings
 
@@ -24,6 +24,7 @@ app.include_router(
     user.router,
     prefix="/api",
     tags=["user"],
+    # dependencies=[Depends(auth.get_current_active_user)],
 )
 
 origins = [
