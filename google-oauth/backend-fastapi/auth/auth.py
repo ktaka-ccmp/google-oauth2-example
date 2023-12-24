@@ -51,12 +51,11 @@ async def get_current_user(request: Request, ds: Session = Depends(get_db), cs: 
     if not session:
         return None
 
-    # print("Session_id: ", session_id)
-    # print("Session: ", session)
-
     username = session["name"]
     user_dict = get_user_by_name(username, ds)
     user=UserBase(**user_dict)
+    print("Session_id: ", session_id)
+    print("Session: ", session)
     print("session[\"name\"]: ", session["name"])
     print("user_dict: ", user_dict)
     print("user: ", user)
