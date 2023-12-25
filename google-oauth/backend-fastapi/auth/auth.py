@@ -157,6 +157,7 @@ async def VerifyToken(jwt: str):
             requests.Request(),
             settings.google_oauth2_client_id)
     except ValueError:
+        print("Error: Failed to validate JWT token with GOOGLE_OAUTH2_CLIENT_ID=" + settings.google_oauth2_client_id +".")
         return None
 
     print("idinfo: ", idinfo)
@@ -172,6 +173,7 @@ async def login(request: Request, response: Response, ds: Session = Depends(get_
 
     idinfo = await VerifyToken(jwt)
     if not idinfo:
+        print("Error: Failed to validate JWT token")
         return  Response("Error: Failed to validate JWT token")
 
     user = await GetOrCreateUser(idinfo, ds)
