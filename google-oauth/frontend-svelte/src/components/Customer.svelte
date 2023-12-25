@@ -1,7 +1,7 @@
 <script>
   import { onMount } from "svelte";
   import { apiAxios } from "../lib/apiAxios";
-  import UserLogout from "./UserLogout.svelte";
+  import LogoutButton from "./LogoutButton.svelte";
 
   let customers = [];
 
@@ -21,7 +21,7 @@
   });
 </script>
 
-<UserLogout />
+<LogoutButton />
 <h2>This is Customer.</h2>
 
 {#await customers}
