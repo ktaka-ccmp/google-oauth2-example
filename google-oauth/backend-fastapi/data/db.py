@@ -37,6 +37,7 @@ class User(DataStoreBase):
     email = Column('email', String(254))
     disabled = Column('disabled', Boolean, default=False)
     admin = Column('admin', Boolean, default=False)
+    password = Column('password', String(254))
 
 class Sessions(CacheStoreBase):
     __tablename__ = 'sessions'
@@ -61,6 +62,7 @@ class UserBase(BaseModel):
     email: str
     disabled: bool
     admin: bool
+    password: str | None
 
 DataStoreBase.metadata.create_all(bind=DataStore)
 CacheStoreBase.metadata.create_all(bind=CacheStore)

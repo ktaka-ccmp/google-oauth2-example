@@ -1,30 +1,42 @@
 from fastapi import FastAPI, Depends
 from fastapi.middleware.cors import CORSMiddleware
 
-from auth import auth, user
-from customer import customer
-from config import settings
+import admin.debug, admin.user, auth.auth, auth.debug
+import customer.customer
 
 app = FastAPI()
 
 app.include_router(
-    auth.router,
+    auth.auth.router,
     prefix="/api",
-    tags=["auth"],
+    tags=["Authentication"],
 )
 
 app.include_router(
-    customer.router,
+    auth.debug.router,
     prefix="/api",
-    tags=["customer"],
-    dependencies=[Depends(auth.get_current_active_user)],
+    tags=["Authentication"],
 )
 
 app.include_router(
-    user.router,
+    customer.customer.router,
     prefix="/api",
-    tags=["user"],
-    # dependencies=[Depends(auth.get_current_active_user)],
+    tags=["CustomerForAuthenticatedUser"],
+    dependencies=[Depends(auth.auth.get_current_active_user)],
+)
+
+app.include_router(
+    admin.user.router,
+    prefix="/api",
+    tags=["AdminOnly"],
+    dependencies=[Depends(auth.auth.get_admin_user)],
+)
+
+app.include_router(
+    admin.debug.router,
+    prefix="/api",
+    tags=["AdminOnly"],
+    dependencies=[Depends(auth.auth.get_admin_user)],
 )
 
 origins = [
@@ -39,12 +51,4 @@ app.add_middleware(
         allow_methods=["*"],
         allow_headers=["*"],
     )
-
-@app.get("/env/", tags=["test"])
-async def env():
-    print("settings: ", settings)
-    return {
-        "origin_server": settings.origin_server,
-        "google_oauth2_client_id": settings.google_oauth2_client_id,
-    }
 

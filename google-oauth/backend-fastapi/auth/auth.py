@@ -1,16 +1,15 @@
 import secrets
 import json
-from typing import Annotated
 from fastapi import Depends, APIRouter, HTTPException, status, Response, Request
 from sqlalchemy.orm import Session
 from data.db import User, UserBase, Sessions
 from data.db import get_db, get_cache
-from starlette.status import HTTP_401_UNAUTHORIZED, HTTP_403_FORBIDDEN, HTTP_500_INTERNAL_SERVER_ERROR
+from starlette.status import HTTP_400_BAD_REQUEST, HTTP_401_UNAUTHORIZED, HTTP_403_FORBIDDEN, HTTP_500_INTERNAL_SERVER_ERROR
 from auth.oauth2google import VerifyToken
-from auth.user import create as GetOrCreateUser
+from admin.user import create as GetOrCreateUser
 
 from typing import Optional
-from fastapi.security import OAuth2PasswordRequestForm, OAuth2PasswordBearer, OAuth2
+from fastapi.security import OAuth2PasswordRequestForm, OAuth2
 from fastapi.openapi.models import OAuthFlows as OAuthFlowsModel
 
 router = APIRouter()
@@ -39,6 +38,9 @@ class OAuth2Cookie(OAuth2):
                 return None
         return session_id
 
+def fake_hash_password(password: str):
+    return "fakehashed_" + password
+
 @router.post("/signin")
 async def signin(response: Response, form_data: OAuth2PasswordRequestForm = Depends(), ds: Session = Depends(get_db), cs: Session = Depends(get_cache)):
     user_dict = get_user_by_name(form_data.username, ds)
@@ -54,6 +56,13 @@ async def signin(response: Response, form_data: OAuth2PasswordRequestForm = Depe
                 )
     user = UserBase(**user_dict)
 
+    if user.password == None:
+        raise HTTPException(status_code=HTTP_403_FORBIDDEN, detail="Empty Password not Allowed for Admin")
+
+    hashed_password = fake_hash_password(form_data.password)
+    if not hashed_password == user.password:
+        raise HTTPException(status_code=HTTP_400_BAD_REQUEST, detail="Incorrect username or password")
+
     session_id=create_session(user, cs)
     response.set_cookie(
                   key="session_id",
@@ -65,11 +74,6 @@ async def signin(response: Response, form_data: OAuth2PasswordRequestForm = Depe
     return {"access_token": user.name, "token_type": "bearer"}
 
 oauth2_scheme = OAuth2Cookie(tokenUrl="/api/signin", auto_error=False)
-
-@router.get("/session/")
-async def read_items(session_id: Annotated[str, Depends(oauth2_scheme)], cs: Session = Depends(get_cache)):
-    session = get_session_by_session_id(session_id, cs)
-    return {"session": session}
 
 def get_session_by_session_id(session_id: str, cs: Session):
     try:
@@ -137,6 +141,12 @@ async def get_current_active_user(current_user: User = Depends(get_current_user)
         raise HTTPException(status_code=HTTP_403_FORBIDDEN, detail="Inactive user")
     return current_user
 
+async def get_admin_user(current_user: User = Depends(get_current_active_user)):
+    print("CurrentUser: ", current_user)
+    if not current_user.admin:
+        raise HTTPException(status_code=HTTP_403_FORBIDDEN, detail="Admin Privilege Required")
+    return current_user
+
 @router.post("/login")
 async def login(request: Request, response: Response, ds: Session = Depends(get_db), cs: Session = Depends(get_cache)):
     body = await request.body()
@@ -168,9 +178,12 @@ async def login(request: Request, response: Response, ds: Session = Depends(get_
         return Response("Error: Auth failed")
     return {"Authenticated_as": user.name}
 
+# @router.get("/logout")
+# async def logout(response: Response, request: Request, cs: Session = Depends(get_cache)):
+#     session_id: str = request.cookies.get("session_id")
+
 @router.get("/logout")
-async def logout(response: Response, request: Request, cs: Session = Depends(get_cache)):
-    session_id: str = request.cookies.get("session_id")
+async def logout(response: Response, cs: Session = Depends(get_cache), session_id: str = Depends(oauth2_scheme)):
     response.delete_cookie("session_id")
     try:
         delete_session(session_id, cs)
@@ -178,12 +191,8 @@ async def logout(response: Response, request: Request, cs: Session = Depends(get
         pass
     return {"cookie": "deleted"}
 
-@router.get("/sessions")
-async def list_sessions(cs: Session = Depends(get_cache)):
-    return cs.query(Sessions).offset(0).limit(100).all()
-
 @router.get("/user/")
-async def read_users_me(user: UserBase = Depends(get_current_active_user)):
+async def get_user(user: UserBase = Depends(get_current_active_user)):
     try:
         return {"username": user.name, "email": user.email,}
     except:

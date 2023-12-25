@@ -8,7 +8,7 @@ echo "insert into customer(name,email) values('a$i','a$i@example.com')"  \
 done
 
 for i in {01..01} ; do
-echo "insert into user(name,email,disabled,admin) values('admin$i','admin$i@example.com','0','1')" | sqlite3 $DB
+echo "insert into user(name,email,disabled,admin,password) values('admin$i','admin$i@example.com','0','1','fakehashed_admin$i')" | sqlite3 $DB
 done
 
 for i in {02..02} ; do
