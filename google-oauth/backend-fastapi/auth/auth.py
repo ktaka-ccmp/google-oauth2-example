@@ -5,12 +5,15 @@ from sqlalchemy.orm import Session
 from data.db import User, UserBase, Sessions
 from data.db import get_db, get_cache
 from starlette.status import HTTP_400_BAD_REQUEST, HTTP_401_UNAUTHORIZED, HTTP_403_FORBIDDEN, HTTP_500_INTERNAL_SERVER_ERROR
-from auth.oauth2google import VerifyToken
 from admin.user import create as GetOrCreateUser
 
 from typing import Optional
 from fastapi.security import OAuth2PasswordRequestForm, OAuth2
 from fastapi.openapi.models import OAuthFlows as OAuthFlowsModel
+
+from google.oauth2 import id_token
+from google.auth.transport import requests
+from config import settings
 
 router = APIRouter()
 
@@ -107,10 +110,10 @@ def get_user_by_name(name: str, ds: Session):
     print("get_user_by_name -> user: ", user)
     return user
 
-async def get_current_user(ds: Session = Depends(get_db), cs: Session = Depends(get_cache), session_id: str = Depends(oauth2_scheme)):
-
 # async def get_current_user(request: Request, ds: Session = Depends(get_db), cs: Session = Depends(get_cache)):
 #     session_id = request.cookies.get("session_id")
+
+async def get_current_user(ds: Session = Depends(get_db), cs: Session = Depends(get_cache), session_id: str = Depends(oauth2_scheme)):
     if not session_id:
         return None
 
@@ -146,6 +149,18 @@ async def get_admin_user(current_user: User = Depends(get_current_active_user)):
     if not current_user.admin:
         raise HTTPException(status_code=HTTP_403_FORBIDDEN, detail="Admin Privilege Required")
     return current_user
+
+async def VerifyToken(jwt: str):
+    try:
+        idinfo = id_token.verify_oauth2_token(
+            jwt,
+            requests.Request(),
+            settings.google_oauth2_client_id)
+    except ValueError:
+        return None
+
+    print("idinfo: ", idinfo)
+    return idinfo
 
 @router.post("/login")
 async def login(request: Request, response: Response, ds: Session = Depends(get_db), cs: Session = Depends(get_cache)):
