@@ -1,8 +1,14 @@
-# Sign in with Google Example using React.js + Django and React.js + fastapi
+# Sign in with Google Example
 
 This repository provides example app implementations using Google OAuth as the authentication mechanism.
-The frontend app is implemented using React.js. 
-The backend API servers are implemented in two ways, one is using Django REST framework(DRF) and the other is using fastapi.
+
+The frontend app is implemented using the following technologies:
+* **React.js**
+* **Svelte.js**
+
+The backend API servers are implemented using the following technologies:
+* **Django REST framework(DRF)**
+* **Fastapi**
 
 The [noauth](noauth) directory contains example apps without authentication.
 
