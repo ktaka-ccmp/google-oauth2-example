@@ -27,7 +27,7 @@
         user = res.data;
         console.log("getUser: user:", user);
       })
-      .catch((error) => console.log("getUser faild: ", error.response));
+      .catch((error) => console.log("getUser failed: ", error.response));
   };
 
   const onLogout = handleLogout;
