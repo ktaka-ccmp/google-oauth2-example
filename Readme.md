@@ -38,22 +38,22 @@ google-oauth/
 
 # Sessions
 
-As for maintaining sessions, I implemented the backend API servers so that they set session cookies after [verification of id token](https://developers.google.com/identity/gsi/web/guides/verify-google-id-token) provided by Google.
+As for maintaining sessions, I implemented the backend API servers so that they set session cookies after [verification of the ID token](https://developers.google.com/identity/gsi/web/guides/verify-google-id-token) provided by Google.
 
 The authentication follows the following steps:
 
 1. A user visits a restricted page.
 1. The frontend app redirects the user to the login page.
-1. The user authenticates them at the Google OAuth endpoint. Google OAuth API returns an id token as a JSON Web Token(JWT).
+1. The user authenticates them at the Google OAuth endpoint. Google OAuth API returns an ID token as a JSON Web Token(JWT).
 1. The frontend app receives the JWT from Google and sends it to the backend API servers.
-1. The backend API servers verify the id token's signature using Google public certificate and trust the user's information in the payload.
+1. The backend API servers verify the ID token's signature using a Google public certificate and trust the user's information in the payload.
 1. The backend API servers create the user if it does not exist in the database and return the user's information while setting a new session cookie in the response header.
 1. The frontend app regards the user as authenticated and sets a property to always send a request with the session cookie in the following API communications.
 1. The backend API servers allow what is allowed for the user as long as the session is valid.
 
-Many examples on the Internet are using JWT access tokens themselves, which are provided by Google or the backend API server.
+Many examples on the Internet use JWT access tokens provided by Google or the backend API server as they are. 
 However, there are arguments that [JWT tokens should not be used for sessions](http://cryto.net/~joepie91/blog/2016/06/13/stop-using-jwt-for-sessions/).
-Therefore, the apps in this repository use an auth backend using the "battle tested", traditional session cookie mechanism.
+Therefore, the apps in this repository use an auth backend using the "battle-tested" traditional session cookie mechanism.
 
 # How the example apps look like
 
