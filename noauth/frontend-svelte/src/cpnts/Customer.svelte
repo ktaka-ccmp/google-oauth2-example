@@ -3,23 +3,30 @@
     import axios from "axios";
 
     let users = [];
-    
+    let Loading = true;
+
     console.log(import.meta.env.VITE_APP_API_SERVER)
 
     onMount(async () => {
-    const res = await axios.get(`${import.meta.env.VITE_APP_API_SERVER}/api/customer/`);
-    users = res.data.results;
-    console.log("axios:", users);
+        await new Promise(r => setTimeout(r, 1000))
+        await axios.get(`${import.meta.env.VITE_APP_API_SERVER}/api/customer/`)
+        .then((res) => {
+            users = res.data.results
+            console.log("axios:", users);
+            Loading = false;
+        })
+        .catch((err) => {
+            console.log("axios err:", err);
+        });
     });
 
 </script>
 
-
 <h2>This is Customer.</h2>
 
-{#await users}
+{#if Loading }
 <p>Loading ...</p>
-{:then users}
+{:else}
 <div class="table-responsive">
     <table class="table table-bordered table-hover table-striped">
         <thead class="table-light">
@@ -40,4 +47,4 @@
             </tbody>
     </table>
 </div>
-{/await}
+{/if}
