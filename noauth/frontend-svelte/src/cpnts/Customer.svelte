@@ -24,7 +24,7 @@
 
 <h2>This is Customer.</h2>
 
-{#if Loading }
+{#if Loading}
 <p>Loading ...</p>
 {:else}
 <div class="table-responsive">

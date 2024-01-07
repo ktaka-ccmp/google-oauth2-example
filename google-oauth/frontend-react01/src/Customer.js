@@ -34,18 +34,14 @@ const CustomerList = () => {
     const [items, setItems] = useState([]);
     const [loading, setLoading] = useState(false);
 
-	const fetchItems = async () => {
+	useMemo(async () => {
 		setLoading(true);
 		await new Promise(r => setTimeout(r, 1000));
 		apiAxios.get(`/api/customer/`)
 		.then(res => setItems(res.data.results))
 		.catch(error => console.log(error))
 		.finally(() => setLoading(false));
-	};
-
-	useMemo(() => {
-		fetchItems();
-	}, []);
+	}, [apiAxios]);
 
     return (
 	<div >
