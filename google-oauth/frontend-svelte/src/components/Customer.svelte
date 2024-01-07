@@ -4,29 +4,24 @@
   import LogoutButton from "./LogoutButton.svelte";
 
   let customers = [];
-
-  const getCustomers = async () => {
-    await apiAxios
-      .get(`/api/customer/`)
-      .then((res) => {
-        customers = res.data.results;
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  };
+  let Loading = true;
 
   onMount(async () => {
-    getCustomers();
+    await new Promise((r) => setTimeout(r, 1000));
+    apiAxios
+      .get(`/api/customer/`)
+      .then((res) => (customers = res.data.results))
+      .catch((error) => console.log(error))
+      .finally(() => Loading = false);
   });
 </script>
 
 <LogoutButton />
 <h2>This is Customer.</h2>
 
-{#await customers}
+{#if Loading}
   <p>Loading ...</p>
-{:then customers}
+{:else}
   <div class="table-responsive">
     <table class="table table-bordered table-hover table-striped">
       <thead class="table-light">
@@ -47,4 +42,4 @@
       </tbody>
     </table>
   </div>
-{/await}
+{/if}
