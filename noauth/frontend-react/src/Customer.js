@@ -35,8 +35,7 @@ const CustomerList = () => {
     const [loading, setLoading] = useState(false);
 
     useMemo(() => {
-	// const fetchItems = async () => {
-	async function fetchItems() {
+	const fetchItems = async () => {
 	    setLoading(true);
 		try {
 		    let res = await axios.get(`${process.env.REACT_APP_API_SERVER}/api/customer/`)
