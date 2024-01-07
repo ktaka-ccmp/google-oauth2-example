@@ -40,9 +40,10 @@ const CustomerList = () => {
 			await new Promise(r => setTimeout(r, 1000))
 			const res = await apiAxios.get(`/api/customer/`)
 			setItems(res.data.results);
-			setLoading(false);
 		} catch (error) {
 			console.log(error);
+		} finally {
+			setLoading(false);
 		}
 	}, [apiAxios]);
 

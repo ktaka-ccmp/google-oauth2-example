@@ -13,9 +13,10 @@
         let res = await apiAxios.get(`/api/customer/`);
         customers = res.data.results;
         console.log("axios:", customers[0]);
-        Loading = false;
     } catch(error){
         console.log("axios error:", error);
+    } finally {
+      Loading = false;
     }
   });
 
