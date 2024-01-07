@@ -6,17 +6,14 @@
   let customers = [];
 
   const getCustomers = async () => {
-    await apiAxios
+    await new Promise((r) => setTimeout(r, 1000));
+    apiAxios
       .get(`/api/customer/`)
-      .then((res) => {
-        customers = res.data.results;
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+      .then((res) => (customers = res.data.results))
+      .catch((error) => console.log(error));
   };
 
-  onMount(async () => {
+  onMount(() => {
     getCustomers();
   });
 </script>
