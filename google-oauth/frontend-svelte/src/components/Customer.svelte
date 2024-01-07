@@ -4,29 +4,30 @@
   import LogoutButton from "./LogoutButton.svelte";
 
   let customers = [];
+  let Loading = true;
+  console.log(import.meta.env.VITE_APP_API_SERVER)
 
-  const getCustomers = async () => {
-    await apiAxios
-      .get(`/api/customer/`)
-      .then((res) => {
+onMount(async () => {
+    try {
+        await new Promise(r => setTimeout(r, 3000))
+
+        let res = await apiAxios.get(`${import.meta.env.VITE_APP_API_SERVER}/api/customer/`);
         customers = res.data.results;
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  };
+        console.log("axios:", customers[0]);
+        Loading = false;
+    } catch(error){
+        console.log("axios error:", error);
+    }
+});
 
-  onMount(async () => {
-    getCustomers();
-  });
 </script>
 
 <LogoutButton />
 <h2>This is Customer.</h2>
 
-{#await customers}
+{#if Loading}
   <p>Loading ...</p>
-{:then customers}
+{:else}
   <div class="table-responsive">
     <table class="table table-bordered table-hover table-striped">
       <thead class="table-light">
@@ -47,4 +48,4 @@
       </tbody>
     </table>
   </div>
-{/await}
+{/if}
