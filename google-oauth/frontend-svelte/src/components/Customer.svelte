@@ -5,20 +5,19 @@
 
   let customers = [];
   let Loading = true;
-  console.log(import.meta.env.VITE_APP_API_SERVER)
 
-onMount(async () => {
+  onMount(async () => {
     try {
-        await new Promise(r => setTimeout(r, 3000))
+        await new Promise(r => setTimeout(r, 1000))
 
-        let res = await apiAxios.get(`${import.meta.env.VITE_APP_API_SERVER}/api/customer/`);
+        let res = await apiAxios.get(`/api/customer/`);
         customers = res.data.results;
         console.log("axios:", customers[0]);
         Loading = false;
     } catch(error){
         console.log("axios error:", error);
     }
-});
+  });
 
 </script>
 
