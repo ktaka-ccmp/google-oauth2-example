@@ -13,11 +13,9 @@
         .then((res) => {
             users = res.data.results
             console.log("axios:", users);
-            Loading = false;
         })
-        .catch((err) => {
-            console.log("axios err:", err);
-        });
+        .catch((err) => console.log("axios err:", err))
+        .finally(() => Loading = false);
     });
 
 </script>
