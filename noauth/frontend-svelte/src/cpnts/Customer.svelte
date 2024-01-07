@@ -12,10 +12,10 @@
             await new Promise(r => setTimeout(r, 3000))
             let res = await axios.get(`${import.meta.env.VITE_APP_API_SERVER}/api/customer/`);
             users = res.data.results;
+            console.log("axios:", users[0]);
         } catch(error){
             console.log("axios error:", error);
         } finally {
-            console.log("axios:", users[0]);
             Loading = false;
         }
     });

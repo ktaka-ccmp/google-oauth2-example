@@ -31,23 +31,23 @@ const CustomerTable = ({ items, loading }) => {
 
 const CustomerList = () => {
     
-    const [items, setItems] = useState([]);
-    const [loading, setLoading] = useState(false);
+	const [items, setItems] = useState([]);
+	const [loading, setLoading] = useState(false);
 
-    useMemo(() => {
-	const fetchItems = async () => {
-	    setLoading(true);
-		try {
-		    let res = await axios.get(`${process.env.REACT_APP_API_SERVER}/api/customer/`)
-		    setItems(res.data.results);
-		    setLoading(false);
-		} catch (error) {
-		    console.log(error);
-		}
-	};
-
-	fetchItems();
-    }, []);
+	useMemo(() => {
+		const fetchItems = async () => {
+			setLoading(true);
+			try {
+				let res = await axios.get(`${process.env.REACT_APP_API_SERVER}/api/customer/`)
+				setItems(res.data.results);
+			} catch (error) {
+				console.log(error);
+			} finally {
+				setLoading(false);
+			}
+		};
+		fetchItems();
+	}, []);
 
     return (
 	<div >
