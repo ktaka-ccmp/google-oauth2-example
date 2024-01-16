@@ -47,19 +47,19 @@ class Sessions(CacheStoreBase):
     name = Column('name', String(30))
 
 # schemas.py
-from pydantic import BaseModel
+from pydantic import BaseModel, EmailStr
 
 class CustomerBase(BaseModel):
     id: int
     name: str
-    email: str
+    email: EmailStr
     class Config:
         orm_mode = True
 
 class UserBase(BaseModel):
     id: int
     name: str
-    email: str
+    email: EmailStr
     disabled: bool
     admin: bool
     password: str | None
