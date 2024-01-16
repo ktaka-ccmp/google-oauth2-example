@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 import customer.customer
-import htmx.page
+import htmx.htmx
 
 app = FastAPI()
 
@@ -13,8 +13,8 @@ app.include_router(
 )
 
 app.include_router(
-    htmx.page.router,
-    prefix="/page",
+    htmx.htmx.router,
+    prefix="/htmx",
     tags=["HTMX"],
 )
 
