@@ -36,10 +36,9 @@ pip install fastapi sqlalchemy uvicorn
 
 Create database
 ~~~
-rm test.db
-python3 db.py
-./create_data.sh
-echo "select * from customer"  | sqlite3 test.db
+rm data/data.db
+python3 data/db.py
+./data/create_data.sh
 ~~~
 
 Run server

@@ -3,10 +3,10 @@ from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
-SQLALCHEMY_DATABASE_URI = "sqlite:///./test.db"
+DATA_STORE_URI = "sqlite:///data/data.db"
 
 engine = create_engine(
-    SQLALCHEMY_DATABASE_URI, connect_args={"check_same_thread": False}, echo=True
+    DATA_STORE_URI, connect_args={"check_same_thread": False}, echo=True
 )
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
@@ -22,14 +22,22 @@ class Customer(Base):
     email = Column('email', String(254))
 
 # schemas.py
-from pydantic import BaseModel
+from pydantic import BaseModel, EmailStr
 
 class CustomerBase(BaseModel):
     id: int
     name: str
-    email: str
+    email: EmailStr
     class Config:
         orm_mode = True
 
 Base.metadata.create_all(bind=engine)
+
+
+def get_db():
+    ds = SessionLocal()
+    try:
+        yield ds
+    finally:
+        ds.close()
 
